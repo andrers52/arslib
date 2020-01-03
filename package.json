@@ -1,0 +1,14 @@
+{
+  "name": "arslib",
+  "version": "0.0.4",
+  "description": "Andre's JavaScript library",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Andre Rodrigues da Silva",
+  "license": "MIT",
+  "type": "module"
+}
