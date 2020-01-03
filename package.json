@@ -1,6 +1,6 @@
 {
   "name": "arslib",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Andre's JavaScript library",
   "directories": {
     "doc": "docs"
