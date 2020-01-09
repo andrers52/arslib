@@ -1,5 +1,5 @@
 import Assert from '../assert.js'
-export default class CommUtil {
+class CommUtil {
   static setServerAddr(serverAddr) {
     CommUtil._server_address = serverAddr
   }
@@ -30,3 +30,6 @@ export default class CommUtil {
     return result.data
   }
 }
+
+export {CommUtil as default}
+export {CommUtil}

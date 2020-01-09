@@ -47,4 +47,5 @@ Random.occurrenceProbability = function(occurrenceProbability) {
   return Random.randomFromInterval(1, scale) === 1
 }
 
-export default Random
+export {Random as default}
+export {Random}

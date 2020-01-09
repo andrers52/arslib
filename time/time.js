@@ -29,4 +29,6 @@ Time.dateAs_yyyy_mm_dd_hh_mm_ss = (date = new Date()) => {
   let second = '' + date.getSeconds(); if (second.length == 1) { second = '0' + second }
   return year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second
 }
-export default Time
+
+export {Time as default}
+export {Time}

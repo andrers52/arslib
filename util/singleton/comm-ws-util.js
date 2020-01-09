@@ -10,7 +10,7 @@ import Assert from '../assert.js'
 
 // 
 const AUTOMATIC_RECONNECT_TIME = 10000
-export default class CommWSUtil {
+class CommWSUtil {
 
 
   static start(
@@ -80,3 +80,6 @@ export default class CommWSUtil {
     }))
   }
 }
+
+export {CommWSUtil as default}
+export {CommWSUtil}

@@ -1,11 +1,13 @@
 // Usage: Observable.call(<object_to_affect>)
 
-export default function Observable() {
+import Assert from '../util/assert.js'
+
+function Observable() {
   this.observers = []
   this.addObserver = function (observerToAdd) {
     Assert.assertIsFunction(
       observerToAdd.observableDataChangeNotification, 
-      `Error: Observer not compliant with expected interface: 'observableDataChangeNotification'`)
+      'Error: Observer not compliant with expected interface: \'observableDataChangeNotification\'')
     if(this.observers.find(observer => observer === observerToAdd)) return
     this.observers.push(observerToAdd)
   }
@@ -20,3 +22,6 @@ export default function Observable() {
     }
   }
 }
+
+export {Observable as default}
+export {Observable}

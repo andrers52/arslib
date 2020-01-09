@@ -63,4 +63,5 @@ if (!EObject.values) {
 
 */
 
-export default EObject
+export {EObject as default}
+export {EObject}

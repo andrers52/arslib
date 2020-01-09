@@ -120,4 +120,5 @@ EArray.indexOfGreaterValue = array => {
 /*
  * function *range(begin, end) { for (let i = begin; i < end; ++i) { yield i; } }
  */
-export default EArray
+export {EArray as default}
+export {EArray}

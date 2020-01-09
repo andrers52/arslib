@@ -1,5 +1,6 @@
+var Image = {}
 //create canvas for image  manipulation
-export function createCanvas(width, height) {
+Image.createCanvas = function(width, height) {
   let canvas = document.createElement('canvas')
   canvas.width = width
   canvas.height = height
@@ -7,8 +8,8 @@ export function createCanvas(width, height) {
 }
 
 // colorsAndPercentages -> [{color: <colorName1>, percentage: <value1>},...{color: <colorNameN>, percentage: <valueN>}]
-export function createPieGraph(width, height, colorsAndPercentages) {
-  let canvas = createCanvas(width, height)
+Image.createPieGraph = function(width, height, colorsAndPercentages) {
+  let canvas = Image.createCanvas(width, height)
   let context = canvas.getContext('2d')
   let onePercentAngle = 2 * Math.PI / 100
   let initialAngle = 0
@@ -33,8 +34,11 @@ export function createPieGraph(width, height, colorsAndPercentages) {
   return canvas
 }
 
-export function createPieGraphWithEvenlyDistributedColors(width, height, colors) {
+Image.createPieGraphWithEvenlyDistributedColors = function(width, height, colors) {
   let percentageForEachColor = 100 / colors.length
   let colorsAndPercentages = colors.map(color => ({color, percentage: percentageForEachColor}))
-  return createPieGraph(width, height, colorsAndPercentages)
+  return Image.createPieGraph(width, height, colorsAndPercentages)
 }
+
+export {Image as default}
+export {Image}

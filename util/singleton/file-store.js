@@ -1,7 +1,7 @@
 'use strict'
 //http://www.tutorialspoint.com/html5/html5_indexeddb.htm
 
-export default function FileStore () {
+function FileStore () {
 
   if(!window.indexedDB) {
     window.indexedDB = window.webkitIndexedDB || window.mozIndexedDB || window.OIndexedDB || window.msIndexedDB 
@@ -61,3 +61,5 @@ export default function FileStore () {
     
 }
 
+export {FileStore as default}
+export {FileStore}

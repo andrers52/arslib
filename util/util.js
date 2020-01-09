@@ -28,7 +28,7 @@ Util.truncateToSignificantDigits = (number, significantDigits) => {
 }
 
 
-  Util.changeObjectPropertiesToNumber = function (Obj) {
+Util.changeObjectPropertiesToNumber = function (Obj) {
   for (let prop in Obj) {
     if (!Obj.hasOwnProperty(prop)) continue
     if (Util.isObj(Obj[prop])) {
@@ -120,5 +120,5 @@ Util.download = (filename, text) => {
     pom.click()
   }
 }
-
-export default Util
+export {Util as default}
+export {Util}

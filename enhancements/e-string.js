@@ -16,6 +16,5 @@ EString.createHash = (string) => {
   return hash.toString()
 }
 
-
-
-export default EString
+export {EString as default}
+export {EString}

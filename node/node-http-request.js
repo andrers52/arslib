@@ -98,4 +98,5 @@ NodeHttpRequest.getContent = (url) => {
   })
 }
 
-export default NodeHttpRequest
+export {NodeHttpRequest as default}
+export {NodeHttpRequest}

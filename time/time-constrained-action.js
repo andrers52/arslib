@@ -2,7 +2,7 @@
 
 'use strict'
 
-import Time from './Time.js'
+import Time from './time.js'
 
 let TimeConstrainedAction = {}
 
@@ -62,4 +62,5 @@ TimeConstrainedAction.wait = async (time) => {
 }
 
 
-export default TimeConstrainedAction
+export {TimeConstrainedAction as default}
+export {TimeConstrainedAction}

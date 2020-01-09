@@ -6,4 +6,5 @@ Platform.isNode = () => {
   return typeof global !== 'undefined'
 }
 
-export default Platform
+export {Platform as default}
+export {Platform}

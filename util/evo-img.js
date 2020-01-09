@@ -68,7 +68,10 @@ function execInstruction (instructionParameters, context) {
   context.restore()
 }
 
-export default function evoImg (code, context) {
+function evoImg (code, context) {
   for (let i0 = 0; i0 < code.length; i0++)
     execInstruction(code[i0], context)
 }
+
+export {evoImg as default}
+export {evoImg}

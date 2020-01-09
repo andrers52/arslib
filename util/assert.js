@@ -142,5 +142,5 @@ Assert.disable = () => {
       Assert[property] = () => {}
 }
 
-// export { Assert as default}
-export default Assert
+export {Assert as default}
+export {Assert}

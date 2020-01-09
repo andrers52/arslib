@@ -127,11 +127,10 @@ function selfTest () {
     OrderedArray.findFirstIndexGreaterOrEqual(array,4),
     3
   )
-  
 
   console.log('OrderedArray self test finished successfully')
 }
 
-
 selfTest()
-export default OrderedArray
+export {OrderedArray as default}
+export {OrderedArray}

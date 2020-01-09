@@ -25,4 +25,5 @@ LanguageConstruct.probabilitySwitch = function(...functionsAndProbabilities) {
   return EArray.choiceWithProbabilities(functions, probabilities)()
 }
 
-export default LanguageConstruct
+export {LanguageConstruct as default}
+export {LanguageConstruct}

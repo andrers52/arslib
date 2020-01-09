@@ -16,7 +16,7 @@ import Assert from '../../util/assert.js'
 import Platform from '../../util/platform.js'
 import Time from '../../time/Time.js'
 
-export default function NodeLogToFile (entityName, dataDescription, valuesToLog, startRightAway = false) {
+function NodeLogToFile (entityName, dataDescription, valuesToLog, startRightAway = false) {
   Assert.assert(entityName, 'Error: Entity name is required to create the file')
   Assert.assertIsString(dataDescription, 'Error: dataDescription is required to create the file')
 
@@ -59,3 +59,6 @@ export default function NodeLogToFile (entityName, dataDescription, valuesToLog,
     })
   }
 }
+
+export {NodeLogToFile as default}
+export {NodeLogToFile}

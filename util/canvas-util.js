@@ -44,4 +44,5 @@ CanvasUtil.shiftLeft = (canvas) => {
 
 }
 
-export default CanvasUtil
+export {CanvasUtil as default}
+export {CanvasUtil}

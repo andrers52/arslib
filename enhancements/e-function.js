@@ -124,7 +124,7 @@ EFunction.addRuntimeTypeTest = (fn, argsTypesArray, resultType, context) => {
     if(resultType === 'void') return
     if(resultType === 'array') {
       if(!Array.isArray(result)) {
-        throw(`Error: function return type expected to be of type 'array'`)
+        throw('Error: function return type expected to be of type \'array\'')
       }
     } else if(typeof result !== resultType) {
       throw(`Error: function return type expected to be of type ${resultType}`)
@@ -163,4 +163,5 @@ EFunction.unregisterObserver = (observedFnc, observerFnc) => {
   return observedFnc
 }
 
-export default EFunction
+export {EFunction as default}
+export {EFunction}

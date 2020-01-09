@@ -7,9 +7,9 @@
 import fs from 'fs'
 import Assert from '../util/assert.js'
 import Platform from '../util/platform.js'
-import Time from '../time/Time.js'
+import Time from '../time/time.js/index.js'
 
-export default function NodeConsoleLog () {
+function NodeConsoleLog () {
   Assert.assert(Platform.isNode(), 'These functions only work in Node')
 
   let fileToLog = 'log.txt'
@@ -28,3 +28,6 @@ export default function NodeConsoleLog () {
   }
 }
 NodeConsoleLog()
+
+export {NodeConsoleLog as default}
+export {NodeConsoleLog}

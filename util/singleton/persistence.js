@@ -7,7 +7,7 @@ import Assert from '../assert.js'
 // Persistence.ent1 = <value>
 // result = Persistence.ent1
 
-export default class Persistence {
+class Persistence {
 
   static configure(namespace, ...entities) {
     Assert.assert(!Persistence.entities,
@@ -36,7 +36,7 @@ export default class Persistence {
             )
           }
         }
-      );
+      )
     })
   }
 
@@ -56,3 +56,6 @@ export default class Persistence {
     )
   }
 }
+
+export {Persistence as default}
+export {Persistence}
