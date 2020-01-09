@@ -7,7 +7,7 @@
 import fs from 'fs'
 import Assert from '../util/assert.js'
 import Platform from '../util/platform.js'
-import Time from '../time/time.js/index.js'
+import Time from '../time/time.js'
 
 function NodeConsoleLog () {
   Assert.assert(Platform.isNode(), 'These functions only work in Node')

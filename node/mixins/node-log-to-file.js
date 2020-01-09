@@ -14,7 +14,7 @@
 import fs from 'fs'
 import Assert from '../../util/assert.js'
 import Platform from '../../util/platform.js'
-import Time from '../../time/Time.js'
+import Time from '../../time/time.js'
 
 function NodeLogToFile (entityName, dataDescription, valuesToLog, startRightAway = false) {
   Assert.assert(entityName, 'Error: Entity name is required to create the file')
