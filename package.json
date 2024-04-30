@@ -1,16 +1,16 @@
 {
-  "name": "arslib",
-  "version": "0.1.6",
-  "description": "Andre's JavaScript library",
-  "repository": "https://github.com/andrers52/arslib.git",
-  "directories": {
-    "doc": "docs"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Andre Rodrigues da Silva",
-  "main": "./index.js",
-  "license": "MIT",
-  "type": "module"
+    "name": "arslib",
+    "version": "0.1.6",
+    "description": "Andre's Utility JavaScript library",
+    "repository": "https://github.com/andrers52/arslib.git",
+    "directories": {
+        "doc": "docs"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Andre Rodrigues da Silva",
+    "main": "./index.js",
+    "license": "MIT",
+    "type": "module"
 }
