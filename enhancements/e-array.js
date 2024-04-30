@@ -3,7 +3,7 @@
 import Assert from '../util/assert.js'
 import Random from '../util/random.js'
 
-var EArray ={}
+var EArray = {}
 
 // ------------------------------------------------------ //
 // Define the static methods in EArray
@@ -13,11 +13,11 @@ EArray.sum = array => array.reduce((total, num) => total + num, 0)
 EArray.mean = array => array.reduce((total, num) => total + num, 0) / array.length
 // mean difference, taken two by two (-1 if not applicable)
 EArray.meanDifferenceTwoByTwo = array => {
-  if(array.length === 0 || array.length === 1) 
-    throw('cannot calculate meanDifferenceTwoByTwo')
+  if (array.length === 0 || array.length === 1)
+    throw ('cannot calculate meanDifferenceTwoByTwo')
   let diffSum = 0
-  for(let i = 1; i<array.length; i++) {
-    diffSum += array[i] - array[i-1]
+  for (let i = 1; i < array.length; i++) {
+    diffSum += array[i] - array[i - 1]
   }
   return diffSum / (array.length - 1)
 }
@@ -37,16 +37,10 @@ EArray.isLast = (array, item) => item === this.last()
 
 EArray.isFirst = (array, item) => item === this.first()
 
-// *** TODO: TEST Z32 AND REMOVE ***
-// EArray.empty = array => {
-//   array.splice(0, array.length)
-//   return array
-// }
-
 // from array of arrays to single array
 // Note: preserveOriginalArray === true is slower
 EArray.flatten = (array, preserveOriginalArray = true) => {
-  let arrayToUse = preserveOriginalArray?
+  let arrayToUse = preserveOriginalArray ?
     [...array] : array
   return arrayToUse.concat.apply([], arrayToUse)
 }
@@ -54,29 +48,29 @@ EArray.flatten = (array, preserveOriginalArray = true) => {
 // from 'flat' array to array of arrays of length 'size'
 // Note: preserveOriginalArray === true is slower
 EArray.unflatten = (flattenedArray, size, preserveOriginalArray = true) => {
-  let arrayToUse = preserveOriginalArray?
+  let arrayToUse = preserveOriginalArray ?
     JSON.parse(JSON.stringify(flattenedArray)) : flattenedArray
   let resultArray = []
-  while (arrayToUse.length > 0) resultArray.push(arrayToUse.splice(0, size))  
+  while (arrayToUse.length > 0) resultArray.push(arrayToUse.splice(0, size))
   return resultArray
 }
 
 
 EArray.removeLast = array => {
-  array.splice(-1,1)
+  array.splice(-1, 1)
   return array
 }
 
 EArray.clone = (array, cloneFunction) => {
   if (!cloneFunction)
-    return array.map(e => 
-      (Array.isArray(e) || e.clone)? 
+    return array.map(e =>
+      (Array.isArray(e) || e.clone) ?
         e.clone() :
-        typeof e === 'object'?
-          Object.assign({},e) :
+        typeof e === 'object' ?
+          Object.assign({}, e) :
           e
     )
-  return array.map(function(item) {
+  return array.map(function (item) {
     return cloneFunction(item)
   })
 }
@@ -102,15 +96,14 @@ EArray.indexChoice = array => Random.randomInt(array.length)
 EArray.indexOfGreaterValue = array => {
   let greater = array[0]
   let resultIndex = 0
-  for(let i=1; i<array.length; i++)
-    if(array[i] > greater) {
+  for (let i = 1; i < array.length; i++)
+    if (array[i] > greater) {
       greater = array[i]
       resultIndex = i
     }
 
   return resultIndex
 }
-
 
 // EArray comprehension
 // range() is a generator that returns all the values between begin and
@@ -120,5 +113,6 @@ EArray.indexOfGreaterValue = array => {
 /*
  * function *range(begin, end) { for (let i = begin; i < end; ++i) { yield i; } }
  */
-export {EArray as default}
-export {EArray}
+export { EArray as default }
+export { EArray }
+

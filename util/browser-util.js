@@ -81,7 +81,5 @@ BrowserUtil.lockOrientation = function (orientation) {
   catch (err) { return null }
 }
 
-// **** START HERE... ****
-
 export {BrowserUtil as default}
 export {BrowserUtil}

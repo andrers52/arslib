@@ -7,8 +7,9 @@ import Time from './time.js'
 let TimeConstrainedAction = {}
 
 TimeConstrainedAction.runUntilConditionReady =
-  ( FnToRun,
+  (FnToRun,
     conditionFn,
+    ExecuteWhenReadyFn,
     testInterval,
     maxWaitTime = null,
     message = null,
@@ -16,30 +17,31 @@ TimeConstrainedAction.runUntilConditionReady =
     let initialTime = Time.currentTime()
     return new Promise(resolve => {
       let tester = () => {
-        if (conditionFn())  {resolve(true); return}
+        if (conditionFn()) { ExecuteWhenReadyFn(); resolve(true); return }
         FnToRun()
-        if(maxWaitTime) {
+        if (maxWaitTime) {
           let currentTime = Time.currentTime()
-          if((currentTime - initialTime) > maxWaitTime) {resolve(false); return}
+          if ((currentTime - initialTime) > maxWaitTime) { resolve(false); return }
         }
-        if(message) console.log('waiting for: ' + message)
+        if (message) console.log('waiting for: ' + message)
         setTimeout(tester, testInterval)
       }
-      if(startWaiting) setTimeout(tester, testInterval) // first interval
+      if (startWaiting) setTimeout(tester, testInterval) // first interval
       else tester() // start right away
     })
   }
 
-TimeConstrainedAction.returnWhenConditionReady = 
-  ( conditionFn,
+TimeConstrainedAction.returnWhenConditionReady =
+  (conditionFn,
     testInterval,
     maxWaitTime = null,
     message = null,
     startWaiting = false) => {
 
     TimeConstrainedAction.runUntilConditionReady(
-      () => {},
+      () => { },
       conditionFn,
+      () => { },
       testInterval,
       maxWaitTime,
       message,
@@ -62,5 +64,6 @@ TimeConstrainedAction.wait = async (time) => {
 }
 
 
-export {TimeConstrainedAction as default}
-export {TimeConstrainedAction}
+export { TimeConstrainedAction as default }
+export { TimeConstrainedAction }
+
