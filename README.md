@@ -1,4 +1,4 @@
-# Andre's Utility JavaScript library
+# Andre's JavaScript Utility library
 
 ## Usage example:
 
@@ -11,11 +11,19 @@ console.log(Util.limitValueToMinMax(10, 5, 11))
 
 To check wich files you can import, look into index.js, in the package root folder.
 
+## NPM package page
+(https://www.npmjs.com/package/arslib)[https://www.npmjs.com/package/arslib]
+
+
 ## NPM package installation
 
 ```bash
 npm install arslib
 ```
 
-## NPM package page
-(https://www.npmjs.com/package/arslib)[https://www.npmjs.com/package/arslib]
+## Run tests
+
+```bash
+npm test
+```
+
