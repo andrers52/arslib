@@ -12,8 +12,10 @@ Assert.testMode = false;
 Assert.assert = (exp, message = "Error") => {
   if (Assert.disableAllVerifications) return; //go faster!
   if (exp !== 0 && (!exp || typeof exp === "undefined")) {
+    const error = new Error("Test failed: " + message);
     if (Assert.testMode && Platform.isNode()) {
       console.error("Test failed: " + message);
+      console.error(error.stack);
       process.exit(1); // exit with error code 1, so that the test fails
     }
     throw message;
@@ -185,7 +187,7 @@ Assert.assertIsNotUndefined = (
   Assert.assert(typeof expression !== "undefined", message);
 };
 
-Assert.assertIsnull = (expression, message = "Should be null") => {
+Assert.assertIsNull = (expression, message = "Should be null") => {
   Assert.assert(expression === null, message);
 };
 

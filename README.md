@@ -27,3 +27,12 @@ npm install arslib
 npm test
 ```
 
+## Creating new tests
+
+Remember to add
+
+```javascript
+Assert.testMode = true;
+```
+
+at the beginning of your test file. This allows node process to fail when an assertion fails. So the test script knows when a test has failed.

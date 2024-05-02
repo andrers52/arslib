@@ -1,13 +1,13 @@
 {
     "name": "arslib",
-    "version": "0.1.10",
+    "version": "0.1.11",
     "description": "Andre's JavaScript Utility library",
     "repository": "https://github.com/andrers52/arslib.git",
     "directories": {
         "doc": "docs"
     },
     "scripts": {
-        "test": "for file in $(find . -name '*.test.js'); do node $file || exit 1; done && echo 'All tests passed!'"
+        "test": "for file in $(find . -name '*.test.js'); do echo Running $file && node $file && echo $file: PASS || exit 1; done && echo 'All tests passed!'"
     },
     "author": "Andre Rodrigues da Silva",
     "main": "./index.js",
