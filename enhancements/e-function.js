@@ -1,40 +1,39 @@
-'use strict'
+"use strict";
 
-import Assert from '../util/assert.js'
-var EFunction ={}
+import Assert from "../util/assert.js";
+var EFunction = {};
 
 //run both functions with the same arguments and return result of the last one
 // NOTE: 'context' is the functions' 'this'. If not provided, current 'this' will
 //       be used.
-EFunction.sequence = (f,g, context) => {
-  Assert.assertIsFunction(f)
-  Assert.assertIsFunction(g)
-  Assert.assert(context, 'No function running context found.')
-  let self = context || this
-  let fBounded = f.bind(self)
-  let gBounded = g.bind(self)
+EFunction.sequence = (f, g, context) => {
+  Assert.assertIsFunction(f);
+  Assert.assertIsFunction(g);
+  Assert.assert(context, "No function running context found.");
+  let self = context || this;
+  let fBounded = f.bind(self);
+  let gBounded = g.bind(self);
   return (arg) => {
-    fBounded(arg)
-    return gBounded(arg)
-  }
-}
+    fBounded(arg);
+    return gBounded(arg);
+  };
+};
 
 //compose functions and return the final transformation of input passed throught them
 //EFunction.compose(f,g) -> f(g(args))
-EFunction.compose = (f,g, context) => {
-  Assert.assertIsFunction(f)
-  Assert.assertIsFunction(g)
-  Assert.assert(context, 'No function running context found.')
-  let self = context || this
-  let fBounded = f.bind(self)
-  let gBounded = g.bind(self)
-  let intermediaryResult = null
-  return arg => {
-    intermediaryResult = gBounded(arg)
-    return fBounded(intermediaryResult)
-  }
-}
-
+EFunction.compose = (f, g, context) => {
+  Assert.assertIsFunction(f);
+  Assert.assertIsFunction(g);
+  Assert.assert(context, "No function running context found.");
+  let self = context || this;
+  let fBounded = f.bind(self);
+  let gBounded = g.bind(self);
+  let intermediaryResult = null;
+  return (arg) => {
+    intermediaryResult = gBounded(arg);
+    return fBounded(intermediaryResult);
+  };
+};
 
 /*
 //TODO: continue when needed...
@@ -63,105 +62,147 @@ throttleControl();//tail call (need tco to not explode the stack)
 };
 */
 
-
-
-//memoization for a function that has one argument, wich supports "toString()
-EFunction.memoize = f => {
-  let cache = {}
-  const MAX_COUNT = 1000000
-  let count = 0
-  return arg => {
-    if(arg in cache) {
-      return cache[arg]
-    } else {
-      if(count < MAX_COUNT) {
-        count++
-        return cache[arg] = f( arg )
-      }
-      return f( arg )
-    }
-  }
-}
-
-
-//limit function calling rate to a give delay - discard extras
-EFunction.limitCallingRateWithDiscard = (f, delay) => {
-  let canCall = true
+/**
+ * Memoizes a function that has one argument, which supports "toString()" for cache key generation.
+ *
+ * @param {Function} f - The function to be memoized.
+ * @param {number} [maxEntries=1000000] - The maximum number of entries in the cache before eviction starts.
+ * @returns {Function} - A memoized version of the input function.
+ *
+ * @example
+ * // Define a simple function that squares a number
+ * function square(n) { return n * n; }
+ *
+ * // Memoize the square function
+ * const memoizedSquare = EFunction.memoize(square);
+ *
+ * // Correct usage
+ * memoizedSquare(2); // 4
+ * memoizedSquare(2); // 4 (retrieved from cache)
+ */
+EFunction.memoize = (f, maxEntries = 1000000) => {
+  let cache = {};
+  let count = 0;
   return (arg) => {
-    if(!canCall) return
-    canCall = false
+    const key = arg.toString(); // Ensure the key is a string
+    if (key in cache) {
+      return cache[key];
+    } else {
+      if (count < maxEntries) {
+        count++;
+        return (cache[key] = f(arg));
+      }
+      // random eviction:
+      let keys = Object.keys(cache);
+      let randomKey = keys[Math.floor(Math.random() * keys.length)];
+      delete cache[randomKey];
+      return (cache[key] = f(arg));
+    }
+  };
+};
+
+/**
+ * Limits the calling rate of a function to a given delay. Discards extra calls made within the delay period.
+ *
+ * @param {Function} f - The function to be rate-limited.
+ * @param {number} delay - The delay in milliseconds to wait before allowing the function to be called again.
+ * @returns {Function} - A rate-limited version of the input function that only allows calls at the specified interval.
+ */
+EFunction.limitCallingRateWithDiscard = (f, delay) => {
+  let canCall = true;
+  return (arg) => {
+    if (!canCall) return;
+    canCall = false;
     setTimeout(() => {
-      canCall = true
-    }, delay)
-    return f(arg)
-  }
-}
+      canCall = true;
+    }, delay);
+    return f(arg);
+  };
+};
 
-
-// Add type asserts to function's arguments and return in runtime
-// Note1: the return type can be a type recognizable by typeof or 'void'
-// Note2: the arguments type can be a type recognizable by typeof or 'array'
-// Note3: context is optional
-// example:
-// function sun(a,b) {return a + b}
-// sun = EFunction.addTypeTest(sun, ['number', 'number'], 'number')
-// sun('asdf', 'wer') -> "Error: expecting a number"
+/**
+ * Adds runtime type assertions to a function's arguments and return value.
+ *
+ * @param {Function} fn - The function to add type assertions to.
+ * @param {Array<string>} argsTypesArray - An array of strings representing the expected types of the function's arguments.
+ * @param {string} resultType - A string representing the expected return type of the function. Can be any type recognizable by `typeof` or 'void'.
+ * @param {Object} [context] - An optional context to bind to the function.
+ * @returns {Function} - A new function with runtime type assertions for its arguments and return value.
+ * @throws {Error} - Throws an error if an argument or the return value does not match the expected type.
+ *
+ * @example
+ * // Define a simple sum function
+ * function sum(a, b) { return a + b; }
+ *
+ * // Add type assertions to the sum function
+ * sum = EFunction.addRuntimeTypeTest(sum, ['number', 'number'], 'number');
+ *
+ * // Correct usage results in the expected return value
+ * sum(1, 2); // 3
+ *
+ * // Incorrect usage throws an error
+ * sum('asdf', 'wer'); // Throws "Error: function argument asdf expected to be of type number"
+ */
 EFunction.addRuntimeTypeTest = (fn, argsTypesArray, resultType, context) => {
   return (...args) => {
-    for(let argIndex=0; argIndex<=argsTypesArray.length; argIndex++) {
-      if(args[argIndex] && 
-        (
-          (typeof args[argIndex] !== argsTypesArray[argIndex]) ||
-          (argsTypesArray[argIndex] === 'array' && !Array.isArray(args[argIndex]))
-        )
+    for (let argIndex = 0; argIndex <= argsTypesArray.length; argIndex++) {
+      if (
+        args[argIndex] &&
+        (typeof args[argIndex] !== argsTypesArray[argIndex] ||
+          (argsTypesArray[argIndex] === "array" &&
+            !Array.isArray(args[argIndex])))
       ) {
-        throw(`Error: function argument ${args[argIndex]} expected to be of type ${argsTypesArray[argIndex]}`)
+        throw `Error: function argument ${args[argIndex]} expected to be of type ${argsTypesArray[argIndex]}`;
       }
     }
 
-    let result = context? fn.call(context,...args) : fn(...args)
-    
-    if(resultType === 'void') return
-    if(resultType === 'array') {
-      if(!Array.isArray(result)) {
-        throw('Error: function return type expected to be of type \'array\'')
+    let result = context ? fn.call(context, ...args) : fn(...args);
+
+    if (resultType === "void") return;
+    if (resultType === "array") {
+      if (!Array.isArray(result)) {
+        throw "Error: function return type expected to be of type 'array'";
       }
-    } else if(typeof result !== resultType) {
-      throw(`Error: function return type expected to be of type ${resultType}`)
+    } else if (typeof result !== resultType) {
+      throw `Error: function return type expected to be of type ${resultType}`;
     }
-    return result
-  }
-}
+    return result;
+  };
+};
 
 // *** OBSERVE ***
-var observedFncId = 0
-var observedToObservers = {}
+var observedFncId = 0;
+var observedToObservers = {};
 function runObservers(observed) {
-  observedToObservers[observed].forEach((observer) => {observer()})
+  observedToObservers[observed].forEach((observer) => {
+    observer();
+  });
 }
 //add observer to function invocation (creates new function with observer call)
 EFunction.registerObserver = (observedFnc, observerFnc) => {
-  let result
-  if(observedToObservers[observedFnc.id]) {
-    observedToObservers[observedFnc.id].push(observerFnc)
-    result = observedFnc
+  let result;
+  if (observedToObservers[observedFnc.id]) {
+    observedToObservers[observedFnc.id].push(observerFnc);
+    result = observedFnc;
   } else {
-    observedFnc.id = observedFncId++
-    observedToObservers[observedFnc.id] = [observerFnc]
+    observedFnc.id = observedFncId++;
+    observedToObservers[observedFnc.id] = [observerFnc];
     result = (arg) => {
-      observedFnc(arg)
-      runObservers(observedFnc.id)
-    }
+      observedFnc(arg);
+      runObservers(observedFnc.id);
+    };
   }
-  return result
-}
+  return result;
+};
 //remove observer (create new function without the observer)
 EFunction.unregisterObserver = (observedFnc, observerFnc) => {
-  if(!observedToObservers[observedFnc.id]) return observedFnc
-  observedToObservers[observedFnc.id] = 
-    observedToObservers[observedFnc.id].filter((observer)=>{return observer !== observerFnc})
-  return observedFnc
-}
+  if (!observedToObservers[observedFnc.id]) return observedFnc;
+  observedToObservers[observedFnc.id] = observedToObservers[
+    observedFnc.id
+  ].filter((observer) => {
+    return observer !== observerFnc;
+  });
+  return observedFnc;
+};
 
-export {EFunction as default}
-export {EFunction}
+export { EFunction, EFunction as default };
