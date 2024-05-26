@@ -1,7 +1,7 @@
 "use strict";
 
-import Assert from "../util/assert.js";
-import Random from "../util/random.js";
+import { Assert } from "../util/assert.js";
+import { Random } from "../util/random.js";
 
 var EArray = {};
 
@@ -121,4 +121,4 @@ EArray.range = function* (begin, end) {
   }
 };
 
-export { EArray, EArray as default };
+export { EArray };

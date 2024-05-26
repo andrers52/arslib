@@ -1,6 +1,6 @@
 "use strict";
 
-import Util from "./util.js";
+import { Util } from "./util.js";
 
 var CanvasUtil = {};
 
@@ -65,4 +65,4 @@ CanvasUtil.shiftLeft = (canvas) => {
   context.clearRect(canvas.width - 1, 0, canvas.width, canvas.height);
 };
 
-export { CanvasUtil, CanvasUtil as default };
+export { CanvasUtil };

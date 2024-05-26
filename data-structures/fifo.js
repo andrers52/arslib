@@ -1,4 +1,4 @@
-import Assert from "../util/assert.js";
+import { Assert } from "../util/assert.js";
 
 /**
  * @param {number} size
@@ -39,4 +39,4 @@ function Fifo(size) {
   };
 }
 
-export { Fifo, Fifo as default };
+export { Fifo };

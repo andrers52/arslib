@@ -1,6 +1,6 @@
 {
     "name": "arslib",
-    "version": "0.1.12",
+    "version": "0.2.0",
     "description": "Andre's JavaScript Utility library",
     "repository": "https://github.com/andrers52/arslib.git",
     "directories": {

@@ -1,6 +1,6 @@
 // Import the Assert utility
-import Assert from "../util/assert.js";
-import Fifo from "./fifo.js";
+import { Assert } from "../util/assert.js";
+import { Fifo } from "./fifo.js";
 
 // Enable test mode for testing
 Assert.testMode = true;

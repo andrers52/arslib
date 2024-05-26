@@ -1,10 +1,9 @@
-'use strict'
+"use strict";
 
-var Platform = {}
+var Platform = {};
 
 Platform.isNode = () => {
-  return typeof global !== 'undefined'
-}
+  return typeof global !== "undefined";
+};
 
-export {Platform as default}
-export {Platform}
+export { Platform };

@@ -1,6 +1,6 @@
 "use strict";
 
-import Assert from "../util/assert.js";
+import { Assert } from "../util/assert.js";
 var EFunction = {};
 
 //run both functions with the same arguments and return result of the last one
@@ -205,4 +205,4 @@ EFunction.unregisterObserver = (observedFnc, observerFnc) => {
   return observedFnc;
 };
 
-export { EFunction, EFunction as default };
+export { EFunction };

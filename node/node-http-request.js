@@ -21,52 +21,57 @@
 //   // and so on
 // });
 
-import http from 'http'
-import https from 'https'
+import { Platform } from "../util/platform.js";
 
-import Assert from '../util/assert.js'
-import Platform from '../util/platform.js'
+var NodeHttpRequest = {};
 
-Assert.assert(Platform.isNode(), 'These functions only work in Node')
+NodeHttpRequest.promisifiedHttpRequest = (
+  params,
+  postData,
+  useHttps = false,
+) => {
+  if (!Platform.isNode()) {
+    console.log("These functions only work in Node");
+    return;
+  }
 
-var NodeHttpRequest = {}
+  const http = require("http");
+  const https = require("https");
 
-NodeHttpRequest.promisifiedHttpRequest = (params, postData, useHttps = false) => {
-  return new Promise(function(resolve, reject) {
-    let libToCall = (useHttps)? https : http
-    var req = libToCall.request(params, function(res) {
+  return new Promise(function (resolve, reject) {
+    let libToCall = useHttps ? https : http;
+    var req = libToCall.request(params, function (res) {
       // reject on bad status
       if (res.statusCode < 200 || res.statusCode >= 300) {
-        return reject(new Error('statusCode=' + res.statusCode))
+        return reject(new Error("statusCode=" + res.statusCode));
       }
       // cumulate data
-      var body = []
-      res.on('data', function(chunk) {
-        body.push(chunk)
-      })
+      var body = [];
+      res.on("data", function (chunk) {
+        body.push(chunk);
+      });
       // resolve on end
-      res.on('end', function() {
+      res.on("end", function () {
         try {
-          body = JSON.parse(Buffer.concat(body).toString())
-        } catch(e) {
-          reject(e)
+          body = JSON.parse(Buffer.concat(body).toString());
+        } catch (e) {
+          reject(e);
         }
-        resolve(body)
-      })
-    })
+        resolve(body);
+      });
+    });
     // reject on request error
-    req.on('error', function(err) {
+    req.on("error", function (err) {
       // This is not a "Second reject", just a different sort of failure
-      reject(err)
-    })
+      reject(err);
+    });
     if (postData) {
-      req.write(postData)
+      req.write(postData);
     }
     // IMPORTANT
-    req.end()
-  })
-}
-
+    req.end();
+  });
+};
 
 // Simpler function, just to get data from url
 // There is not a single external dependency included. Usage is then rather simple, due to Promise interface:
@@ -76,27 +81,36 @@ NodeHttpRequest.promisifiedHttpRequest = (params, postData, useHttps = false) =>
 //   .catch((err) => console.error(err));
 
 NodeHttpRequest.getContent = (url) => {
+  if (!Platform.isNode()) {
+    console.log("These functions only work in Node");
+    return;
+  }
+
+  const http = require("http");
+  const https = require("https");
+
   // return new pending promise
   return new Promise((resolve, reject) => {
     // select http or https module, depending on reqested url
-    const lib = url.startsWith('https') ? https : http
+    const lib = url.startsWith("https") ? https : http;
     const request = lib.get(url, (response) => {
       // handle http errors
       if (response.statusCode < 200 || response.statusCode > 299) {
-        console.log(response)
-        reject(new Error('Failed to load page, status code: ' + response.statusCode))
+        console.log(response);
+        reject(
+          new Error("Failed to load page, status code: " + response.statusCode),
+        );
       }
       // temporary data holder
-      const body = []
+      const body = [];
       // on every content chunk, push it to the data array
-      response.on('data', (chunk) => body.push(chunk))
+      response.on("data", (chunk) => body.push(chunk));
       // we are done, resolve promise with those joined chunks
-      response.on('end', () => resolve(body.join('')))
-    })
+      response.on("end", () => resolve(body.join("")));
+    });
     // handle connection errors of the request
-    request.on('error', (err) => reject(err))
-  })
-}
+    request.on("error", (err) => reject(err));
+  });
+};
 
-export {NodeHttpRequest as default}
-export {NodeHttpRequest}
+export { NodeHttpRequest };

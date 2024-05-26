@@ -4,30 +4,36 @@
 // after that everything logged will also be sent to a 'log.txt'.
 // Also, the 'log.txt' file is recreated everytime the program is run.
 
-import fs from 'fs'
-import Assert from '../util/assert.js'
-import Platform from '../util/platform.js'
-import Time from '../time/time.js'
+import { Time } from "../time/time.js";
+import { Platform } from "../util/platform.js";
 
-function NodeConsoleLog () {
-  Assert.assert(Platform.isNode(), 'These functions only work in Node')
+function NodeConsoleLog() {
+  if (!Platform.isNode()) {
+    console.log("These functions only work in Node");
+    return;
+  }
 
-  let fileToLog = 'log.txt'
-  let oldConsoleLog = console.log
+  const fs = require("fs");
+
+  let fileToLog = "log.txt";
+  let oldConsoleLog = console.log;
 
   // create file
-  fs.writeFile(fileToLog, '---- Log start ---', (err) => {
-    if (err) oldConsoleLog.log(err)
-  })
+  fs.writeFile(fileToLog, "---- Log start ---", (err) => {
+    if (err) oldConsoleLog.log(err);
+  });
 
   console.log = (text) => {
-    fs.appendFileSync(fileToLog, `${Time.dateAs_yyyy_mm_dd_hh_mm_ss()} ${Time.currentTime()} ${text} \n`, (err) => {
-      if (err) oldConsoleLog.log(err)
-    })
-    oldConsoleLog(text)
-  }
+    fs.appendFileSync(
+      fileToLog,
+      `${Time.dateAs_yyyy_mm_dd_hh_mm_ss()} ${Time.currentTime()} ${text} \n`,
+      (err) => {
+        if (err) oldConsoleLog.log(err);
+      },
+    );
+    oldConsoleLog(text);
+  };
 }
-NodeConsoleLog()
+NodeConsoleLog();
 
-export {NodeConsoleLog as default}
-export {NodeConsoleLog}
+export { NodeConsoleLog };

@@ -1,5 +1,5 @@
-import Assert from "../util/assert.js";
-import EFunction from "./e-function.js";
+import { Assert } from "../util/assert.js";
+import { EFunction } from "./e-function.js";
 
 // enable test mode
 Assert.testMode = true;

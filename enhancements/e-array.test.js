@@ -1,5 +1,5 @@
-import Assert from "../util/assert.js";
-import EArray from "./e-array.js";
+import { Assert } from "../util/assert.js";
+import { EArray } from "./e-array.js";
 
 // enable test mode
 Assert.testMode = true;

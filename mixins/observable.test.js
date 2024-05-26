@@ -1,5 +1,5 @@
-import Assert from "../util/assert.js";
-import Observable from "./observable.js";
+import { Assert } from "../util/assert.js";
+import { Observable } from "./observable.js";
 
 // enable test mode
 Assert.testMode = true;
