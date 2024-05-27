@@ -19,18 +19,18 @@ export { Time } from "./time/time.js";
 export { Assert } from "./util/assert.js";
 export { BrowserUtil } from "./util/browser-util.js";
 export { CanvasUtil } from "./util/canvas-util.js";
+export { CommUtil } from "./util/comm-util.js";
 export { Cookie } from "./util/cookie.js";
 export { ImageUtil } from "./util/image-util.js";
 export { LanguageConstruct } from "./util/language-construct.js";
 export { OrderedArray } from "./util/ordered-array.js";
+export { Persistence } from "./util/persistence.js";
 export { Platform } from "./util/platform.js";
 export { Random } from "./util/random.js";
 export { Sound } from "./util/sound.js";
 export { Util } from "./util/util.js";
 
 // util/singleton
-export { CommUtil } from "./util/singleton/comm-util.js";
 export { CommWSUtil } from "./util/singleton/comm-ws-util.js";
 export { FileStore } from "./util/singleton/file-store.js";
 export { Localization } from "./util/singleton/localization.js";
-export { Persistence } from "./util/singleton/persistence.js";

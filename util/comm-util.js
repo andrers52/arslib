@@ -1,15 +1,12 @@
-import { Assert } from "../assert.js";
+import { Assert } from "./assert.js";
 class CommUtil {
-  static setServerAddr(serverAddr) {
-    CommUtil._server_address = serverAddr;
-  }
   // Usage example:
   // CommUtil.communicate('/user/login', 'POST', userInfo)
   // .then(data => console.log(data))
   // .catch(message => console.log(message))
-  static async communicate(address, method, body) {
+  async communicate(address, method, body) {
     Assert.assert(CommUtil._server_address, "No server address defined");
-    const request = new Request(`${CommUtil._server_address}${address}`, {
+    const request = new Request(`${address}`, {
       method: method,
       headers: {
         "Content-Type": "application/json",
