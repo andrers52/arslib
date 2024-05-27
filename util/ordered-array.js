@@ -1,6 +1,5 @@
 "use strict";
 
-import { Assert } from "./assert.js";
 var OrderedArray = {};
 
 // ------------------------------------------------------ //
@@ -67,45 +66,4 @@ OrderedArray.findLastIndexSmallerOrEqual = (array, value) => {
   return adjustedResultIndex;
 };
 
-// *** SELF TEST ***
-
-function selfTest() {
-  console.log("OrderedArray self test started");
-
-  // test #1, do not find index for element not in the array
-  // when searching with searchOnlyExactValue = true
-  let array = [1, 2, 4, 5];
-  Assert.assertIsEqual(OrderedArray.binarySearch(array, 3), -1);
-  // test #2, do find index for element in the array
-  array = [1, 2, 3, 4, 5];
-  Assert.assertIsEqual(OrderedArray.binarySearch(array, 3), 2);
-  // test #3, do find index for greater element when target is not in the array
-  array = [1, 2, 4, 5];
-  Assert.assertIsEqual(OrderedArray.findFirstIndexGreaterOrEqual(array, 3), 2);
-  // test #4, do find index for greater element when target is in the array
-  array = [1, 2, 3, 4, 5];
-  Assert.assertIsEqual(OrderedArray.findFirstIndexGreaterOrEqual(array, 3), 2);
-  // test #6, do find index for smaller element not in the array
-  array = [1, 2, 4, 5];
-  Assert.assertIsEqual(
-    OrderedArray.findLastIndexSmallerOrEqual(array, 3, false),
-    1,
-  );
-  // test #5, do find index for smaller element when target is in the array
-  array = [1, 2, 3, 4, 5];
-  Assert.assertIsEqual(OrderedArray.findLastIndexSmallerOrEqual(array, 3), 2);
-  // test #6, do find index for elements at extremities
-  array = [1, 2, 3, 4, 5];
-  Assert.assertIsEqual(OrderedArray.binarySearch(array, 1), 0);
-  Assert.assertIsEqual(OrderedArray.binarySearch(array, 5), 4);
-  // test #7, do find index for aprox elements at extremities
-  array = [1, 3, 4, 5];
-  Assert.assertIsEqual(OrderedArray.findLastIndexSmallerOrEqual(array, 2), 0);
-  array = [1, 2, 3, 5];
-  Assert.assertIsEqual(OrderedArray.findFirstIndexGreaterOrEqual(array, 4), 3);
-
-  console.log("OrderedArray self test finished successfully");
-}
-
-selfTest();
 export { OrderedArray };

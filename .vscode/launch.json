@@ -5,14 +5,12 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "chrome",
+      "type": "node",
       "request": "launch",
-      "name": "chrome debug",
-      "url": "http://localhost:4200/#",
-      "webRoot": "${workspaceFolder}",
-      "sourceMapPathOverrides": {
-        "webpack:/*": "${webRoot}/*"
-      }
+      "name": "Run Single Test File",
+      "program": "${workspaceFolder}/util/language-construct.test.js",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
     }
   ]
 }
