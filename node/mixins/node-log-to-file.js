@@ -25,7 +25,7 @@ import { Platform } from "../../util/platform.js";
  * @example
  * // Usage: import '<path-to-arslib>/arslib/node/node-log-to-file.js'.
  * // inside the object you want to add this feature:
- * // NodeLogToFile.call(this, '<dataDescription>','<entityName>', [<valueToLog1>,...<valueToLogN>], startRightAway = false)
+ * // await NodeLogToFile.call(this, '<dataDescription>','<entityName>', [<valueToLog1>,...<valueToLogN>], startRightAway = false)
  * // it will generate a file called <entityName>_<valueToLog1>..._<valueToLogN>.log in the cwd/log directory
  * // to log just call 'this.log({<valueToLog1>: <value1>,..,<valueToLogN>: <valueN>})'
  * // To start logging you need to call this.startLogging() or call NodeLogToFile with startRightAway = true
@@ -43,7 +43,7 @@ import { Platform } from "../../util/platform.js";
 // To start logging you need to call this.startLoggin()
 // or call NodeLogToFile with startRightAway = true
 
-function NodeLogToFile(
+async function NodeLogToFile(
   entityName,
   dataDescription,
   valuesToLog,
@@ -54,7 +54,7 @@ function NodeLogToFile(
     return;
   }
 
-  const fs = require("fs");
+  const { default: fs } = await import("fs");
 
   Assert.assertIsString(
     dataDescription,

@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.2] - 2025-06-10
+
+### Fixed
+
+- **ES Module Compatibility**: Replaced all `require()` statements with dynamic `import()` for Node.js built-in modules
+  - Updated `node/node-http-request.js` to use `import("http")` and `import("https")`
+  - Updated `node/node-console-log.js` to use `import("fs")`
+  - Updated `node/mixins/node-log-to-file.js` to use `import("fs")`
+- **Mocha Test Compatibility**: Fixed interference with Mocha tests in projects that import this library
+- **Pure ES Modules**: Library now uses ES modules throughout, eliminating CommonJS/ESM mixing issues
+
+### Changed
+
+- Node.js utility functions are now `async` functions due to dynamic imports
+- Function signatures updated to reflect async nature in JSDoc documentation
+
+### Technical Notes
+
+- This change ensures compatibility with modern testing frameworks like Mocha
+- Maintains backward compatibility while using modern ES module patterns
+- Supports Node.js 14+ with native ES module support
+
 ## [0.3.0] - 2025-06-10
 
 ### Added

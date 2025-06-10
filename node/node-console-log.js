@@ -21,13 +21,13 @@ import { Platform } from "../util/platform.js";
 // after that everything logged will also be sent to a 'log.txt'.
 // Also, the 'log.txt' file is recreated everytime the program is run.
 
-function NodeConsoleLog() {
+async function NodeConsoleLog() {
   if (!Platform.isNode()) {
     console.log("These functions only work in Node");
     return;
   }
 
-  const fs = require("fs");
+  const { default: fs } = await import("fs");
 
   let fileToLog = "log.txt";
   let oldConsoleLog = console.log;
@@ -48,6 +48,6 @@ function NodeConsoleLog() {
     oldConsoleLog(text);
   };
 }
-NodeConsoleLog();
+await NodeConsoleLog();
 
 export { NodeConsoleLog };

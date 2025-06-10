@@ -69,7 +69,7 @@ var NodeHttpRequest = {};
 //   // and so on
 // });
 
-NodeHttpRequest.promisifiedHttpRequest = (
+NodeHttpRequest.promisifiedHttpRequest = async (
   params,
   postData,
   useHttps = false,
@@ -79,8 +79,8 @@ NodeHttpRequest.promisifiedHttpRequest = (
     return;
   }
 
-  const http = require("http");
-  const https = require("https");
+  const { default: http } = await import("http");
+  const { default: https } = await import("https");
 
   return new Promise(function (resolve, reject) {
     let libToCall = useHttps ? https : http;
@@ -133,14 +133,14 @@ NodeHttpRequest.promisifiedHttpRequest = (
 //   .then((html) => console.log(html))
 //   .catch((err) => console.error(err));
 
-NodeHttpRequest.getContent = (url) => {
+NodeHttpRequest.getContent = async (url) => {
   if (!Platform.isNode()) {
     console.log("These functions only work in Node");
     return;
   }
 
-  const http = require("http");
-  const https = require("https");
+  const { default: http } = await import("http");
+  const { default: https } = await import("https");
 
   // return new pending promise
   return new Promise((resolve, reject) => {
