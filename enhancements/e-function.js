@@ -3,6 +3,13 @@
 import { Assert } from "../util/assert.js";
 var EFunction = {};
 
+/**
+ * Runs both functions sequentially with the same arguments and returns result of the last one
+ * @param {Function} f - First function to execute
+ * @param {Function} g - Second function to execute (its result will be returned)
+ * @param {Object} context - The functions' 'this' context. If not provided, current 'this' will be used
+ * @returns {Function} A new function that executes f then g with the same arguments
+ */
 //run both functions with the same arguments and return result of the last one
 // NOTE: 'context' is the functions' 'this'. If not provided, current 'this' will
 //       be used.
@@ -19,6 +26,13 @@ EFunction.sequence = (f, g, context) => {
   };
 };
 
+/**
+ * Composes functions and returns the final transformation of input passed through them
+ * @param {Function} f - Outer function that receives the result of g
+ * @param {Function} g - Inner function that processes the initial argument
+ * @param {Object} context - The functions' 'this' context. If not provided, current 'this' will be used
+ * @returns {Function} A new function that executes f(g(args))
+ */
 //compose functions and return the final transformation of input passed throught them
 //EFunction.compose(f,g) -> f(g(args))
 EFunction.compose = (f, g, context) => {
@@ -103,10 +117,9 @@ EFunction.memoize = (f, maxEntries = 1000000) => {
 
 /**
  * Limits the calling rate of a function to a given delay. Discards extra calls made within the delay period.
- *
- * @param {Function} f - The function to be rate-limited.
- * @param {number} delay - The delay in milliseconds to wait before allowing the function to be called again.
- * @returns {Function} - A rate-limited version of the input function that only allows calls at the specified interval.
+ * @param {Function} f - The function to be rate-limited
+ * @param {number} delay - The delay in milliseconds to wait before allowing the function to be called again
+ * @returns {Function} A rate-limited version of the input function that only allows calls at the specified interval
  */
 EFunction.limitCallingRateWithDiscard = (f, delay) => {
   let canCall = true;
@@ -173,11 +186,23 @@ EFunction.addRuntimeTypeTest = (fn, argsTypesArray, resultType, context) => {
 // *** OBSERVE ***
 var observedFncId = 0;
 var observedToObservers = {};
+
+/**
+ * Runs all registered observers for a given observed function
+ * @param {number} observed - The ID of the observed function
+ */
 function runObservers(observed) {
   observedToObservers[observed].forEach((observer) => {
     observer();
   });
 }
+
+/**
+ * Adds an observer to function invocation (creates new function with observer call)
+ * @param {Function} observedFnc - The function to be observed
+ * @param {Function} observerFnc - The observer function to be called after the observed function
+ * @returns {Function} The observed function (possibly wrapped to call observers)
+ */
 //add observer to function invocation (creates new function with observer call)
 EFunction.registerObserver = (observedFnc, observerFnc) => {
   let result;
@@ -194,6 +219,13 @@ EFunction.registerObserver = (observedFnc, observerFnc) => {
   }
   return result;
 };
+
+/**
+ * Removes an observer from a function (creates new function without the observer)
+ * @param {Function} observedFnc - The observed function to remove observer from
+ * @param {Function} observerFnc - The observer function to remove
+ * @returns {Function} The observed function without the specified observer
+ */
 //remove observer (create new function without the observer)
 EFunction.unregisterObserver = (observedFnc, observerFnc) => {
   if (!observedToObservers[observedFnc.id]) return observedFnc;

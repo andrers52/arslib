@@ -1,9 +1,19 @@
 "use strict";
 var EObject = {};
 
+/**
+ * Checks if an object is empty (has no own properties)
+ * @param {Object} obj - The object to check
+ * @returns {boolean} True if the object is empty, false otherwise
+ */
 EObject.isEmpty = (obj) =>
   Object.keys(obj).length === 0 && obj.constructor === Object;
 
+/**
+ * Swaps the keys and values of an object
+ * @param {Object} obj - The object whose keys and values should be swapped
+ * @returns {Object} A new object with keys and values swapped
+ */
 EObject.swapObjectKeysAndValues = (obj) => {
   var new_obj = {};
   for (var prop in obj) {
@@ -14,6 +24,12 @@ EObject.swapObjectKeysAndValues = (obj) => {
   return new_obj;
 };
 
+/**
+ * Recursively checks if two objects have the same properties and values
+ * @param {Object} obj1 - First object to compare
+ * @param {Object} obj2 - Second object to compare
+ * @returns {boolean} True if objects have same properties and values (deep comparison), false otherwise
+ */
 EObject.hasSameProperties = function (obj1, obj2) {
   if (typeof obj1 !== "object" || typeof obj2 !== "object") return false;
   const obj1Keys = Object.keys(obj1);
@@ -30,6 +46,12 @@ EObject.hasSameProperties = function (obj1, obj2) {
   return true;
 };
 
+/**
+ * Recursively extends/merges properties from obj2 into obj1 (deep merge)
+ * @param {Object} obj1 - Target object to extend (will be modified)
+ * @param {Object} obj2 - Source object to copy properties from
+ * @returns {Object} The extended obj1 object
+ */
 EObject.extend = function (obj1, obj2) {
   for (var p in obj2) {
     try {

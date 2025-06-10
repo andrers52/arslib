@@ -1,5 +1,21 @@
 import { Assert } from "./assert.js";
+
+/**
+ * Utility class for HTTP communication with JSON APIs
+ */
 class CommUtil {
+  /**
+   * Communicates with a server endpoint using fetch API
+   * @param {string} address - The endpoint address/URL
+   * @param {string} method - HTTP method ('GET', 'POST', 'PUT', 'DELETE', etc.)
+   * @param {Object} body - Request body object (will be JSON stringified)
+   * @returns {Promise<any>} Promise that resolves with response data or rejects with error message
+   * @throws {string} Throws error message if response status indicates failure
+   * @example
+   * // CommUtil.communicate('/user/login', 'POST', userInfo)
+   * // .then(data => console.log(data))
+   * // .catch(message => console.log(message))
+   */
   // Usage example:
   // CommUtil.communicate('/user/login', 'POST', userInfo)
   // .then(data => console.log(data))

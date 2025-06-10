@@ -1,5 +1,14 @@
 import { Assert } from "./assert.js";
 
+/**
+ * Persistence utility class for managing localStorage with automatic serialization
+ * @example
+ * // import { Persistence }
+ * // start service: namespace serves to separate apps
+ * // persistence = new Persistence(<namespace>,'ent1','ent2',..., 'entN')
+ * // persistence.ent1 = <value>
+ * // result = persistence.ent1
+ */
 // Usage example:
 // import { Persistence }
 // start service: namespace serves to separate apps
@@ -8,6 +17,11 @@ import { Assert } from "./assert.js";
 // result = persistence.ent1
 
 class Persistence {
+  /**
+   * Creates a new Persistence instance with specified entities
+   * @param {string} namespace - Namespace to separate different apps in localStorage
+   * @param {...string} entities - Entity names to create persistent properties for
+   */
   constructor(namespace, ...entities) {
     Assert.assert(
       !this.entities,
@@ -31,12 +45,22 @@ class Persistence {
     });
   }
 
+  /**
+   * Retrieves a value from localStorage for the given entity
+   * @param {string} entity - Entity name to retrieve
+   * @returns {any} Parsed value from localStorage, or null if not found
+   */
   retrieve(entity) {
     return JSON.parse(
       window.localStorage.getItem(`${this.namespace}:${entity}`),
     );
   }
 
+  /**
+   * Saves a value to localStorage for the given entity
+   * @param {string} entity - Entity name to save
+   * @param {any} value - Value to save (will be JSON stringified)
+   */
   save(entity, value) {
     window.localStorage.setItem(
       `${this.namespace}:${entity}`,

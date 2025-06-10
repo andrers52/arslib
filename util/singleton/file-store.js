@@ -1,6 +1,10 @@
 "use strict";
 //http://www.tutorialspoint.com/html5/html5_indexeddb.htm
 
+/**
+ * FileStore constructor - Creates an IndexedDB-based file storage system
+ * @constructor
+ */
 function FileStore() {
   if (!window.indexedDB) {
     window.indexedDB =
@@ -18,6 +22,10 @@ function FileStore() {
     window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
   let dbVersion = 1;
 
+  /**
+   * Checks if IndexedDB is available in the current browser
+   * @returns {boolean} True if IndexedDB is supported, false otherwise
+   */
   this.isAvailable = function () {
     return !!window.indexedDB;
   };
@@ -35,6 +43,10 @@ function FileStore() {
   };
 
   let db;
+  /**
+   * Creates an object store in the database
+   * @param {IDBDatabase} dataBase - The IndexedDB database instance
+   */
   let createObjectStore = function (dataBase) {
     // Create an objectStore
     console.log("Creating objectStore");
@@ -45,6 +57,13 @@ function FileStore() {
     createObjectStore(event.target.result);
   };
 
+  /**
+   * Stores a file blob in the IndexedDB
+   * @param {string} identifier - Unique identifier for the file
+   * @param {Blob} blob - The file blob to store
+   * @param {Function} successCalback - Callback function called on successful storage
+   * @param {Function} errorCallback - Callback function called on error
+   */
   this.putFile = function (identifier, blob, successCalback, errorCallback) {
     // Open a transaction to the database
     var transaction = db.transaction(["mimi"], window.IDBTransaction.WRITE);
@@ -54,6 +73,12 @@ function FileStore() {
     transaction.objectStore("mimi").put(blob, identifier);
   };
 
+  /**
+   * Retrieves a file blob from the IndexedDB
+   * @param {string} identifier - Unique identifier for the file to retrieve
+   * @param {Function} successCallback - Callback function called with the retrieved blob on success
+   * @param {Function} errorCallback - Callback function called on error
+   */
   this.getFile = function (identifier, successCallback, errorCallback) {
     // Open a transaction to the database
     var transaction = db.transaction(["mimi"], window.IDBTransaction.READ);

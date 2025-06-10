@@ -1,4 +1,11 @@
 var ImageUtil = {};
+
+/**
+ * Creates a canvas element for image manipulation
+ * @param {number} width - Canvas width in pixels
+ * @param {number} height - Canvas height in pixels
+ * @returns {HTMLCanvasElement} The created canvas element
+ */
 //create canvas for image  manipulation
 ImageUtil.createCanvas = function (width, height) {
   let canvas = document.createElement("canvas");
@@ -7,6 +14,13 @@ ImageUtil.createCanvas = function (width, height) {
   return canvas;
 };
 
+/**
+ * Creates a pie chart canvas with specified colors and percentages
+ * @param {number} width - Canvas width in pixels
+ * @param {number} height - Canvas height in pixels
+ * @param {Array<{color: string, percentage: number}>} colorsAndPercentages - Array of objects with color names and percentage values
+ * @returns {HTMLCanvasElement} Canvas element containing the pie chart
+ */
 // colorsAndPercentages -> [{color: <colorName1>, percentage: <value1>},...{color: <colorNameN>, percentage: <valueN>}]
 ImageUtil.createPieGraph = function (width, height, colorsAndPercentages) {
   let canvas = ImageUtil.createCanvas(width, height);
@@ -40,6 +54,13 @@ ImageUtil.createPieGraph = function (width, height, colorsAndPercentages) {
   return canvas;
 };
 
+/**
+ * Creates a pie chart with evenly distributed colors (equal percentages)
+ * @param {number} width - Canvas width in pixels
+ * @param {number} height - Canvas height in pixels
+ * @param {string[]} colors - Array of color names to use
+ * @returns {HTMLCanvasElement} Canvas element containing the pie chart with equal segments
+ */
 ImageUtil.createPieGraphWithEvenlyDistributedColors = function (
   width,
   height,

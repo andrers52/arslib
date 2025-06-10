@@ -25,6 +25,50 @@ import { Platform } from "../util/platform.js";
 
 var NodeHttpRequest = {};
 
+/**
+ * Promisified HTTP request function for Node.js
+ * @param {Object} params - HTTP request parameters
+ * @param {string} params.host - Hostname or IP address
+ * @param {number} params.port - Port number
+ * @param {string} params.method - HTTP method ('GET', 'POST', etc.)
+ * @param {string} params.path - Request path
+ * @param {string} [postData] - Optional data to send with POST requests
+ * @param {boolean} useHttps - Whether to use HTTPS instead of HTTP (default: false)
+ * @returns {Promise<any>} Promise that resolves with parsed JSON response body
+ * @example
+ * // var params = {
+ * //   host: '127.0.0.1',
+ * //   port: 4000,
+ * //   method: 'GET',
+ * //   path: '/api/v1/service'
+ * // };
+ * // promisifiedHttpRequest(params).then(function(body) {
+ * //   console.log(body);
+ * // });
+ */
+// Usage:
+// var params = {
+//   host: '127.0.0.1',
+//   port: 4000,
+//   method: 'GET',
+//   path: '/api/v1/service'
+// };
+// // this is a get, so there's no post data
+
+// promisifiedHttpRequest(params).then(function(body) {
+//   console.log(body);
+// });
+
+// And these promises can be chained, too...
+
+// promisifiedHttpRequest(params).then(function(body) {
+//   console.log(body);
+//   return promisifiedHttpRequest(otherParams);
+// }).then(function(body) {
+//   console.log(body);
+//   // and so on
+// });
+
 NodeHttpRequest.promisifiedHttpRequest = (
   params,
   postData,
@@ -73,6 +117,15 @@ NodeHttpRequest.promisifiedHttpRequest = (
   });
 };
 
+/**
+ * Simple function to get content from a URL using GET request
+ * @param {string} url - Full URL to fetch content from (supports both HTTP and HTTPS)
+ * @returns {Promise<string>} Promise that resolves with the response content as string
+ * @example
+ * // getContent('https://www.random.org/integers/?num=1&min=1&max=100&col=1&base=10&format=plain&rnd=new')
+ * //   .then((html) => console.log(html))
+ * //   .catch((err) => console.error(err));
+ */
 // Simpler function, just to get data from url
 // There is not a single external dependency included. Usage is then rather simple, due to Promise interface:
 

@@ -7,6 +7,20 @@
 import { Time } from "../time/time.js";
 import { Platform } from "../util/platform.js";
 
+/**
+ * Overrides console.log in Node.js to also write to 'log.txt' file
+ * Automatically creates/recreates 'log.txt' file on program start
+ * @example
+ * // Usage: import '<path-to-arslib>/arslib/node/node-console-log.js'.
+ * // just import it and use console.log() normally,
+ * // after that everything logged will also be sent to a 'log.txt'.
+ */
+// Override console.log in node to (also) write to 'log.txt' file
+// Usage: import '<path-to-arslib>/arslib/node/node-console-log.js'.
+// just import it and use console.log() normally,
+// after that everything logged will also be sent to a 'log.txt'.
+// Also, the 'log.txt' file is recreated everytime the program is run.
+
 function NodeConsoleLog() {
   if (!Platform.isNode()) {
     console.log("These functions only work in Node");

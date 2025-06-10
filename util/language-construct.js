@@ -3,6 +3,13 @@ import { Assert } from "./assert.js";
 
 var LanguageConstruct = {};
 
+/**
+ * Selects and executes one function based on probability weights
+ * @param {...(Function|number)} functionsAndProbabilities - Alternating functions and their probability weights (func1, prob1, func2, prob2, ..., funcN, probN)
+ * @returns {any} Result of the selected function execution
+ * @example
+ * // LanguageConstruct.probabilitySwitch(func1, 0.3, func2, 0.7)
+ */
 // Call format: LanguageConstruct.probabilitySwitch(func1, prob1, func2, prob2,..., funcN, probN)
 // Returns result of selected function
 LanguageConstruct.probabilitySwitch = function (...functionsAndProbabilities) {

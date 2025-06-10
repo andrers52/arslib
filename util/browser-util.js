@@ -1,6 +1,15 @@
 "use strict";
 let BrowserUtil = {};
 
+/**
+ * Determines the best supported video format for a given video element
+ * @param {HTMLVideoElement} video - The video element to test format support
+ * @returns {string} The supported video format extension ('webm', 'mp4', 'ogg', or empty string if none supported)
+ * @example
+ * // videoElement = document.createElement("video");
+ * // let result = BrowserUtil.supportedVideoFormat(videoElement);
+ * // alert(result);
+ */
 BrowserUtil.supportedVideoFormat = function (video) {
   // *** USAGE ***
   // *** http://answers.oreilly.com/topic/2896-how-to-display-a-video-on-html5-canvas/
@@ -53,6 +62,10 @@ window.cancelAnimationFrame = (function () {
   );
 })();
 
+/**
+ * Requests fullscreen mode for the document
+ * Does nothing if already in fullscreen mode
+ */
 BrowserUtil.fullScreen = function () {
   let doc = window.document;
   let docEl = doc.documentElement;
@@ -76,6 +89,11 @@ BrowserUtil.fullScreen = function () {
   requestFullScreen.call(docEl);
 };
 
+/**
+ * Attempts to lock the screen orientation (best effort approach)
+ * @param {string} orientation - Desired orientation ('landscape', 'portrait', etc.)
+ * @returns {boolean|null} True if successful, false if failed, null if not supported or error occurred
+ */
 BrowserUtil.lockOrientation = function (orientation) {
   //best effor approach
   try {
