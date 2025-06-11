@@ -5,6 +5,53 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2025-06-11
+
+### Changed
+
+- **Architecture Refactor**: Converted singleton pattern utilities to regular function constructors for better encapsulation and flexibility
+  - `FileStore`: Converted from class to function constructor with proper closure-based privacy
+  - `CommWSUtil`: Converted from static class to function constructor, enabling multiple WebSocket connections
+  - `Localization`: Enhanced from factory function to constructor with improved API and state management
+
+### Fixed
+
+- **FileStore**: Fixed database initialization timing issues and transaction handling
+  - Added pending operations queue to handle calls before database is ready
+  - Replaced deprecated `IDBTransaction` constants with standard string values
+  - Fixed `getFile` method transaction handling and event processing
+- **CommWSUtil**: Improved WebSocket connection reliability
+  - Added WebSocket state checking before sending messages
+  - Enhanced error handling and reconnection logic
+  - Better separation of concerns with private methods
+
+### Added
+
+- **Enhanced Localization API**: New methods for better usability
+  - `getCurrentLanguage()`: Get current language setting
+  - `getString(key)`: Get specific localized string by key
+  - `updateLanguage(newLanguage, newSymbols)`: Dynamically change language
+  - `getSupportedLanguages()`: Get list of supported languages
+  - `getLocalizedStrings()`: Get all localized strings (returns immutable copy)
+
+### Removed
+
+- **Singleton Pattern**: Removed singleton implementations in favor of regular constructors
+  - Files moved from `util/singleton/` to `util/` directory
+  - Static class methods converted to instance methods
+
+### Migration Guide
+
+- **FileStore**: `const fileStore = new FileStore()` (same usage)
+- **CommWSUtil**: `const commUtil = new CommWSUtil(); commUtil.start(...)` (instead of `CommWSUtil.start(...)`)
+- **Localization**: `const localizer = new Localization(lang, symbols); localizer.getString(key)` (instead of direct property access)
+
+### Technical Notes
+
+- All utilities now use closure-based privacy for better encapsulation
+- Function constructors provide better flexibility than singleton patterns
+- Breaking changes require major version bump (0.3.x → 0.4.x)
+
 ## [0.3.2] - 2025-06-10
 
 ### Fixed

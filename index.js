@@ -31,6 +31,6 @@ export { Sound } from "./util/sound.js";
 export { Util } from "./util/util.js";
 
 // util/singleton
-export { CommWSUtil } from "./util/singleton/comm-ws-util.js";
-export { FileStore } from "./util/singleton/file-store.js";
-export { Localization } from "./util/singleton/localization.js";
+export { CommWSUtil } from "./util/comm-ws-util.js";
+export { FileStore } from "./util/file-store.js";
+export { Localization } from "./util/localization.js";
