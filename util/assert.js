@@ -1,32 +1,22 @@
 "use strict";
 
-import { Platform } from "./platform.js";
-
 var Assert = {};
 
 // set this to disable asserts globally
 Assert.disableAllVerifications = false;
-// set this to enable test mode (prevents process.exit when inside test runner)
-Assert.testMode = false;
 
 /**
  * Basic assertion function that throws an error if expression is falsy
  * @param {any} exp - Expression to test for truthiness
  * @param {string} message - Error message to display if assertion fails
  * @returns {boolean} True if assertion passes
- * @throws {string} Throws message if assertion fails
+ * @throws {Error} Throws Error object with "Test failed: " prefix if assertion fails
  */
 Assert.assert = (exp, message = "Error") => {
   if (Assert.disableAllVerifications) return; //go faster!
   if (exp !== 0 && (!exp || typeof exp === "undefined")) {
     const error = new Error("Test failed: " + message);
-    // In test mode, don't call process.exit to allow test runners to handle errors properly
-    if (!Assert.testMode && Platform.isNode()) {
-      console.error("Test failed: " + message);
-      console.error(error.stack);
-      process.exit(1); // exit with error code 1, so that the test fails
-    }
-    throw message;
+    throw error;
   }
   return true;
 };

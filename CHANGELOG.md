@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.2] - 2025-06-12
+
+### Changed
+
+- **Assert.js**: Simplified assertion behavior for better compatibility
+  - Removed `process.exit(1)` calls that terminated the entire process
+  - Removed `testMode` property and Platform dependency (no longer needed)
+  - Now simply throws Error objects with "Test failed: " prefix for all failures
+  - Maintains proper error stack traces for better debugging
+  - Compatible with all test frameworks without special configuration
+
+### Improved
+
+- **Error Handling**: More predictable and standard JavaScript error handling behavior
+- **Test Framework Compatibility**: Works seamlessly with Mocha, Jest, and other test runners
+- **Debugging Experience**: Preserves full stack traces when assertions fail
+
 ## [0.5.1] - 2025-06-12
 
 ### Fixed

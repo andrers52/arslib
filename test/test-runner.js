@@ -16,9 +16,6 @@ class TestRunner {
     this.failed = 0;
     this.startTime = Date.now();
     this.currentTestName = "";
-
-    // Enable test mode to prevent Assert from calling process.exit
-    Assert.testMode = true;
   }
 
   /**
@@ -54,9 +51,6 @@ class TestRunner {
     }
 
     this._printSummary();
-
-    // Reset test mode
-    Assert.testMode = false;
 
     const allPassed = this.failed === 0;
     if (!allPassed && Platform.isNode()) {
