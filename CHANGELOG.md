@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## [0.5.0] - 2025-06-12
+
+### Fixed
+
+- **Util.linearConversionWithMaxAndMin**: Fixed test parameter naming to match function signature
+- **Util.removeTagsFromString**: Added Node.js compatibility with regex fallback when DOM is not available
+
+### Added
+
+- **Test Runner**: Implemented comprehensive, zero-dependency test runner with modern expect API
+  - New `test/test-runner.js` with fluent assertion methods
+  - Complete test coverage for all previously untested modules
+  - Updated all existing tests to use new test runner
+  - **Enhanced Error Messages**: All expect methods now accept optional descriptive messages for better test failure reporting
+- **Assert.js**: Enhanced with new assertion methods
+  - `assertHasProperty`, `assertHasLength`, `assertIsType`
+  - `assertThrowsWithMessage`, `assertContains`
+  - Improved error messages and Node.js compatibility
+- **Node.js Module Tests**: Added comprehensive test coverage for Node.js-specific modules
+  - `node/node-http-request.test.js` - HTTP request functionality testing
+  - `node/node-console-log.test.js` - Console log override functionality testing
+  - `node/mixins/node-log-to-file.test.js` - File logging mixin testing
+
+### Changed
+
+- **Test Quality Improvement**: Systematically removed all assertion/check comments from test files and converted them into descriptive error messages for better debugging experience
+- **Code Clarity**: All test assertions now use descriptive messages as third parameter to expect methods instead of inline comments
+- **Documentation**: Updated README and test documentation to reflect new testing best practices
+
 ## [0.4.0] - 2025-06-11
 
 ### Changed

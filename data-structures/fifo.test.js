@@ -1,63 +1,113 @@
-// Import the Assert utility
-import { Assert } from "../util/assert.js";
+import { TestRunner, expect } from "../test/test-runner.js";
 import { Fifo } from "./fifo.js";
 
-// Enable test mode for testing
-Assert.testMode = true;
+const runner = new TestRunner();
 
-function testFifoInitialization() {
+runner.test("Fifo initialization creates valid object", () => {
   const fifo = new Fifo(3);
-  Assert.assertIsObject(fifo, "Initialization should create a Fifo object");
-  Assert.assertIsEqual(
-    fifo.data.length,
+  expect.toBeType(fifo, "object", "Fifo constructor should return an object");
+  expect.toHaveProperty(fifo, "data", "Fifo should have a data property");
+  expect.toHaveLength(
+    fifo.data,
     3,
-    "Fifo should be initialized with the correct size",
+    "Fifo data array should have the specified size",
   );
-  console.log("testFifoInitialization: PASS");
-}
 
-function testFifoInsertAndRemove() {
+  for (let i = 0; i < fifo.data.length; i++) {
+    expect.toBeNull(fifo.data[i], `Fifo data[${i}] should be initially null`);
+  }
+});
+
+runner.test("Fifo insert and remove operations work correctly", () => {
   const fifo = new Fifo(3);
-  let removed;
 
-  // Test insert with no removal expected (Fifo not full)
-  Assert.assertIsNull(fifo.insert(10), "Insert should not remove any element");
-  Assert.assertIsNull(fifo.insert(20), "Insert should not remove any element");
-
-  // Test insert that causes no removal (Fifo becomes full)
-  removed = fifo.insert(30);
-  Assert.assertIsNull(
-    removed,
-    "Insert should not remove any element as fifo is not yet full",
+  expect.toBeNull(
+    fifo.insert(10),
+    "First insertion should return null (no overflow)",
+  );
+  expect.toBeNull(
+    fifo.insert(20),
+    "Second insertion should return null (no overflow)",
+  );
+  expect.toBeNull(
+    fifo.insert(30),
+    "Third insertion should return null (no overflow)",
   );
 
-  // Inserting into a full fifo should remove the first element
-  removed = fifo.insert(40);
-  Assert.assertIsEqual(
-    removed,
+  expect.toBe(
+    fifo.insert(40),
     10,
-    "Insert should remove the first element when fifo is full",
+    "Fourth insertion should return the overwritten value (10)",
   );
 
-  // Testing removal
-  removed = fifo.remove();
-  Assert.assertIsEqual(removed, 20, "Remove should return the first element");
-  removed = fifo.remove();
-  Assert.assertIsEqual(
-    removed,
-    30,
-    "Remove should return the next first element",
+  expect.toBe(
+    fifo.remove(),
+    20,
+    "First removal should return 20 (second inserted value)",
   );
-  removed = fifo.remove();
-  Assert.assertIsEqual(removed, 40, "Remove should return the last element");
+  expect.toBe(fifo.remove(), 30, "Second removal should return 30");
+  expect.toBe(fifo.remove(), 40, "Third removal should return 40");
+  expect.toBeNull(
+    fifo.remove(),
+    "Removing from empty queue should return null",
+  );
+});
 
-  // Now fifo should be empty, removing should return null
-  removed = fifo.remove();
-  Assert.assertIsNull(removed, "Remove should return null as fifo is empty");
+runner.test("Fifo handles invalid sizes properly", () => {
+  expect.toThrow(
+    () => new Fifo(0),
+    "Invalid size",
+    "Zero size should throw error",
+  );
+  expect.toThrow(
+    () => new Fifo(-1),
+    "Invalid size",
+    "Negative size should throw error",
+  );
+  expect.toThrow(
+    () => new Fifo("invalid"),
+    "expecting a number",
+    "Non-numeric size should throw error",
+  );
+});
 
-  console.log("testFifoInsertAndRemove: PASS");
-}
+runner.test("Fifo handles edge cases", () => {
+  const fifo = new Fifo(1);
 
-// Run the tests
-testFifoInitialization();
-testFifoInsertAndRemove();
+  expect.toBeNull(
+    fifo.insert(100),
+    "First insertion in single-element FIFO should return null",
+  );
+  expect.toBe(
+    fifo.insert(200),
+    100,
+    "Second insertion should immediately overflow and return 100",
+  );
+  expect.toBe(
+    fifo.remove(),
+    200,
+    "Removal should return the current element (200)",
+  );
+  expect.toBeNull(
+    fifo.remove(),
+    "Removing from empty single-element FIFO should return null",
+  );
+});
+
+runner.test("Fifo maintains correct order with mixed operations", () => {
+  const fifo = new Fifo(2);
+
+  expect.toBeNull(fifo.insert(1), "First insertion should return null");
+  expect.toBe(
+    fifo.remove(),
+    1,
+    "Should remove and return the first inserted value",
+  );
+  expect.toBeNull(fifo.insert(2), "Insert after removal should return null");
+  expect.toBeNull(fifo.insert(3), "Second insertion should return null");
+  expect.toBe(fifo.remove(), 2, "Should remove and return 2");
+  expect.toBe(fifo.remove(), 3, "Should remove and return 3");
+});
+
+// Run all tests
+runner.run();

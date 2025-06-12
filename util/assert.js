@@ -8,6 +8,8 @@ var Assert = {};
 Assert.disableAllVerifications = false;
 // set this to enable test mode
 Assert.testMode = false;
+// set this to indicate we're inside a test runner (prevents process.exit)
+Assert.insideTestRunner = false;
 
 /**
  * Basic assertion function that throws an error if expression is falsy
@@ -20,7 +22,9 @@ Assert.assert = (exp, message = "Error") => {
   if (Assert.disableAllVerifications) return; //go faster!
   if (exp !== 0 && (!exp || typeof exp === "undefined")) {
     const error = new Error("Test failed: " + message);
-    if (Assert.testMode && Platform.isNode()) {
+    // In test mode, don't call process.exit if we're inside a try-catch context
+    // This allows test runners to properly handle thrown errors
+    if (Assert.testMode && Platform.isNode() && !Assert.insideTestRunner) {
       console.error("Test failed: " + message);
       console.error(error.stack);
       process.exit(1); // exit with error code 1, so that the test fails
@@ -56,7 +60,7 @@ Assert.hasProperty = (object, property, message = "Property not found") => {
  * Asserts that two elements are strictly equal (===)
  * @param {any} element1 - First element to compare
  * @param {any} element2 - Second element to compare
- * @param {string} message - Error message if elements are not equal
+ * @param {string} message - Error message to display if elements are not equal
  */
 Assert.assertIsEqual = (
   element1,
@@ -70,7 +74,7 @@ Assert.assertIsEqual = (
  * Asserts that two elements are not strictly equal (!==)
  * @param {any} received - Received value
  * @param {any} expected - Expected value (should be different)
- * @param {string} message - Error message if elements are equal
+ * @param {string} message - Error message to display if elements are equal
  */
 Assert.assertIsNotEqual = (
   received,
@@ -102,7 +106,7 @@ Assert.assertIsValidString = (
 /**
  * Asserts that a value is a function
  * @param {any} functionToTest - Value to test
- * @param {string} message - Error message if value is not a function
+ * @param {string} message - Error message to display if value is not a function
  */
 Assert.assertIsFunction = (
   functionToTest,
@@ -114,7 +118,7 @@ Assert.assertIsFunction = (
 /**
  * Asserts that a value is an object
  * @param {any} objectToTest - Value to test
- * @param {string} message - Error message if value is not an object
+ * @param {string} message - Error message to display if value is not an object
  */
 Assert.assertIsObject = (
   objectToTest,
@@ -140,7 +144,7 @@ Assert.assertIsOptionalFunction = (
 /**
  * Asserts that a value is a valid number (not NaN or Infinity)
  * @param {any} number - Value to test
- * @param {string} message - Error message if value is not a valid number
+ * @param {string} message - Error message to display if value is not a valid number
  */
 Assert.assertIsNumber = (number, message = "Error: expecting a number") => {
   Assert.assert(
@@ -154,7 +158,7 @@ Assert.assertIsNumber = (number, message = "Error: expecting a number") => {
 /**
  * Asserts that a value is a string
  * @param {any} string - Value to test
- * @param {string} message - Error message if value is not a string
+ * @param {string} message - Error message to display if value is not a string
  */
 Assert.assertIsString = (string, message = "Error: expecting a string") => {
   Assert.assert(typeof string === "string", message);
@@ -163,7 +167,7 @@ Assert.assertIsString = (string, message = "Error: expecting a string") => {
 /**
  * Asserts that a value is an array
  * @param {any} array - Value to test
- * @param {string} message - Error message if value is not an array
+ * @param {string} message - Error message to display if value is not an array
  */
 Assert.assertIsArray = (array, message = "Error: expecting an array") => {
   Assert.assert(Array.isArray(array), message);
@@ -172,7 +176,7 @@ Assert.assertIsArray = (array, message = "Error: expecting an array") => {
 /**
  * Asserts that an array is empty
  * @param {any[]} array - Array to test
- * @param {string} message - Error message if array is not empty
+ * @param {string} message - Error message to display if array is not empty
  */
 Assert.assertIsEmptyArray = (array, message = "Error: array not empty") => {
   Assert.assert(array.length === 0, message);
@@ -181,7 +185,7 @@ Assert.assertIsEmptyArray = (array, message = "Error: array not empty") => {
 /**
  * Asserts that an array is not empty
  * @param {any[]} array - Array to test
- * @param {string} message - Error message if array is empty
+ * @param {string} message - Error message to display if array is empty
  */
 Assert.assertIsNotEmptyArray = (array, message = "Error: array empty") => {
   Assert.assert(array.length !== 0, message);
@@ -344,6 +348,352 @@ Assert.assertIsNull = (expression, message = "Should be null") => {
  */
 Assert.assertIsNotNull = (expression, message = "Should not be null") => {
   Assert.assert(expression !== null, message);
+};
+
+/**
+ * Asserts that a value does not contain a substring or array does not contain an element
+ * @param {string|any[]} container - String or array to search in
+ * @param {any} item - Item that should not be present
+ * @param {string} message - Error message if item is found
+ */
+Assert.assertNotContains = (
+  container,
+  item,
+  message = "Container should not contain item",
+) => {
+  if (typeof container === "string") {
+    Assert.assertIsString(container, "Expected string container");
+    Assert.assert(!container.includes(item), message);
+  } else if (Array.isArray(container)) {
+    Assert.assertIsArray(container, "Expected array container");
+    Assert.assert(!container.includes(item), message);
+  } else {
+    Assert.assert(false, "Expected string or array for not contains assertion");
+  }
+};
+
+/**
+ * Asserts that a function throws an error when called
+ * @param {Function} fn - Function that should throw an error
+ * @param {string} message - Error message if function does not throw
+ */
+Assert.assertThrows = (fn, message = "Function should throw an error") => {
+  Assert.assertIsFunction(fn, "Expected a function for throw test");
+  let thrown = false;
+  try {
+    fn();
+  } catch (error) {
+    thrown = true;
+  }
+  Assert.assert(thrown, message);
+};
+
+/**
+ * Asserts that a function does not throw an error when called
+ * @param {Function} fn - Function that should not throw an error
+ * @param {string} message - Error message if function throws
+ */
+Assert.assertDoesNotThrow = (
+  fn,
+  message = "Function should not throw an error",
+) => {
+  Assert.assertIsFunction(fn, "Expected a function for no-throw test");
+  let thrown = false;
+  let thrownError = null;
+  try {
+    fn();
+  } catch (error) {
+    thrown = true;
+    thrownError = error;
+  }
+  Assert.assert(
+    !thrown,
+    message + (thrownError ? ` (threw: ${thrownError})` : ""),
+  );
+};
+
+/**
+ * Asserts that a number is greater than another number
+ * @param {number} actual - The actual number
+ * @param {number} expected - The number that actual should be greater than
+ * @param {string} message - Error message if assertion fails
+ */
+Assert.assertGreaterThan = (
+  actual,
+  expected,
+  message = "Number should be greater than expected",
+) => {
+  Assert.assertIsNumber(actual, "Expected actual value to be a number");
+  Assert.assertIsNumber(expected, "Expected expected value to be a number");
+  Assert.assert(actual > expected, message);
+};
+
+/**
+ * Asserts that a number is less than another number
+ * @param {number} actual - The actual number
+ * @param {number} expected - The number that actual should be less than
+ * @param {string} message - Error message if assertion fails
+ */
+Assert.assertLessThan = (
+  actual,
+  expected,
+  message = "Number should be less than expected",
+) => {
+  Assert.assertIsNumber(actual, "Expected actual value to be a number");
+  Assert.assertIsNumber(expected, "Expected expected value to be a number");
+  Assert.assert(actual < expected, message);
+};
+
+/**
+ * Asserts that a number is greater than or equal to another number
+ * @param {number} actual - The actual number
+ * @param {number} expected - The number that actual should be greater than or equal to
+ * @param {string} message - Error message if assertion fails
+ */
+Assert.assertGreaterThanOrEqual = (
+  actual,
+  expected,
+  message = "Number should be greater than or equal to expected",
+) => {
+  Assert.assertIsNumber(actual, "Expected actual value to be a number");
+  Assert.assertIsNumber(expected, "Expected expected value to be a number");
+  Assert.assert(actual >= expected, message);
+};
+
+/**
+ * Asserts that a number is less than or equal to another number
+ * @param {number} actual - The actual number
+ * @param {number} expected - The number that actual should be less than or equal to
+ * @param {string} message - Error message if assertion fails
+ */
+Assert.assertLessThanOrEqual = (
+  actual,
+  expected,
+  message = "Number should be less than or equal to expected",
+) => {
+  Assert.assertIsNumber(actual, "Expected actual value to be a number");
+  Assert.assertIsNumber(expected, "Expected expected value to be a number");
+  Assert.assert(actual <= expected, message);
+};
+
+/**
+ * Asserts that a value is an instance of a specific class/constructor
+ * @param {any} object - Object to test
+ * @param {Function} constructor - Constructor function/class to test against
+ * @param {string} message - Error message if assertion fails
+ */
+Assert.assertInstanceOf = (
+  object,
+  constructor,
+  message = "Object should be instance of expected constructor",
+) => {
+  Assert.assertIsFunction(constructor, "Expected constructor to be a function");
+  Assert.assert(object instanceof constructor, message);
+};
+
+/**
+ * Asserts that two arrays are equal (same length and same elements in same order)
+ * @param {any[]} actual - Actual array
+ * @param {any[]} expected - Expected array
+ * @param {string} message - Error message if arrays are not equal
+ */
+Assert.assertArraysEqual = (
+  actual,
+  expected,
+  message = "Arrays should be equal",
+) => {
+  Assert.assertIsArray(actual, "Expected actual to be an array");
+  Assert.assertIsArray(expected, "Expected expected to be an array");
+  Assert.assertIsEqual(
+    actual.length,
+    expected.length,
+    "Arrays should have same length",
+  );
+
+  for (let i = 0; i < actual.length; i++) {
+    Assert.assertIsEqual(
+      actual[i],
+      expected[i],
+      `Array elements at index ${i} should be equal`,
+    );
+  }
+};
+
+/**
+ * Asserts that a value matches a regular expression pattern
+ * @param {string} string - String to test
+ * @param {RegExp|string} pattern - Regular expression pattern
+ * @param {string} message - Error message if string doesn't match pattern
+ */
+Assert.assertMatches = (
+  string,
+  pattern,
+  message = "String should match pattern",
+) => {
+  Assert.assertIsString(string, "Expected string to test against pattern");
+  const regex = pattern instanceof RegExp ? pattern : new RegExp(pattern);
+  Assert.assert(regex.test(string), message);
+};
+
+/**
+ * Asserts that a value does not match a regular expression pattern
+ * @param {string} string - String to test
+ * @param {RegExp|string} pattern - Regular expression pattern
+ * @param {string} message - Error message if string matches pattern
+ */
+Assert.assertNotMatches = (
+  string,
+  pattern,
+  message = "String should not match pattern",
+) => {
+  Assert.assertIsString(string, "Expected string to test against pattern");
+  const regex = pattern instanceof RegExp ? pattern : new RegExp(pattern);
+  Assert.assert(!regex.test(string), message);
+};
+
+/**
+ * Asserts that a value contains a substring or array contains an element
+ * @param {string|any[]} container - String or array to search in
+ * @param {any} item - Item to search for
+ * @param {string} message - Error message if item is not found
+ */
+Assert.assertContains = (
+  container,
+  item,
+  message = "Container should contain item",
+) => {
+  if (typeof container === "string") {
+    Assert.assertIsString(container, "Expected string container");
+    Assert.assert(container.includes(item), message);
+  } else if (Array.isArray(container)) {
+    Assert.assertIsArray(container, "Expected array container");
+    Assert.assert(container.includes(item), message);
+  } else {
+    Assert.assert(false, "Expected string or array for contains assertion");
+  }
+};
+
+/**
+ * Asserts that an object has a specific property
+ * @param {Object} object - Object to test
+ * @param {string} property - Property name to check
+ * @param {string} message - Error message if property is missing
+ */
+Assert.assertHasProperty = (
+  object,
+  property,
+  message = "Expected object to have property",
+) => {
+  Assert.assertIsObject(object, "Expected an object for property check");
+  Assert.assertIsString(property, "Expected property name to be a string");
+  Assert.assert(
+    object.hasOwnProperty(property) || property in object,
+    message + ` "${property}"`,
+  );
+};
+
+/**
+ * Asserts that an array has a specific length
+ * @param {any[]} array - Array to test
+ * @param {number} expectedLength - Expected length
+ * @param {string} message - Error message if length doesn't match
+ */
+Assert.assertHasLength = (
+  array,
+  expectedLength,
+  message = "Expected array to have specific length",
+) => {
+  Assert.assertIsArray(array, "Expected an array for length check");
+  Assert.assertIsNumber(expectedLength, "Expected length to be a number");
+  Assert.assertIsEqual(
+    array.length,
+    expectedLength,
+    message + ` ${expectedLength}, but got ${array.length}`,
+  );
+};
+
+/**
+ * Asserts that a value is of a specific type
+ * @param {any} value - Value to test
+ * @param {string} expectedType - Expected type ('string', 'number', 'object', 'function', 'array', 'boolean')
+ * @param {string} message - Error message if type doesn't match
+ */
+Assert.assertIsType = (
+  value,
+  expectedType,
+  message = "Expected value to be of specific type",
+) => {
+  switch (expectedType) {
+    case "string":
+      Assert.assertIsString(
+        value,
+        message + ` string, but got ${typeof value}`,
+      );
+      break;
+    case "number":
+      Assert.assertIsNumber(
+        value,
+        message + ` number, but got ${typeof value}`,
+      );
+      break;
+    case "object":
+      Assert.assertIsObject(
+        value,
+        message + ` object, but got ${typeof value}`,
+      );
+      break;
+    case "function":
+      Assert.assertIsFunction(
+        value,
+        message + ` function, but got ${typeof value}`,
+      );
+      break;
+    case "array":
+      Assert.assertIsArray(value, message + ` array, but got ${typeof value}`);
+      break;
+    case "boolean":
+      Assert.assert(
+        typeof value === "boolean",
+        message + ` boolean, but got ${typeof value}`,
+      );
+      break;
+    default:
+      Assert.assert(false, `Unknown type "${expectedType}" for type assertion`);
+  }
+};
+
+/**
+ * Asserts that a function throws an error when called, with optional message checking
+ * @param {Function} fn - Function that should throw an error
+ * @param {string} [expectedMessage] - Optional expected error message substring
+ * @param {string} message - Error message if function does not throw
+ */
+Assert.assertThrowsWithMessage = (
+  fn,
+  expectedMessage,
+  message = "Function should throw an error",
+) => {
+  Assert.assertIsFunction(fn, "Expected a function for throw test");
+
+  let thrown = false;
+  let thrownError = null;
+
+  try {
+    fn();
+  } catch (error) {
+    thrown = true;
+    thrownError = error;
+  }
+
+  Assert.assert(thrown, message);
+
+  if (expectedMessage) {
+    const errorMessage = thrownError?.message || thrownError;
+    Assert.assert(
+      errorMessage.includes(expectedMessage),
+      `Expected error message to contain "${expectedMessage}", but got "${errorMessage}"`,
+    );
+  }
 };
 
 /**

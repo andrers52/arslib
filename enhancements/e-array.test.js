@@ -1,25 +1,26 @@
-import { Assert } from "../util/assert.js";
+import { TestRunner, expect } from "../test/test-runner.js";
 import { EArray } from "./e-array.js";
 
-// enable test mode
-Assert.testMode = true;
+const runner = new TestRunner();
 
-function testRange() {
+runner.test("EArray.range generates correct sequence", () => {
   let range = EArray.range(1, 5);
   let expectedValues = [1, 2, 3, 4];
 
   for (let expectedValue of expectedValues) {
     let actualValue = range.next().value;
-    Assert.assertIsEqual(
+    expect.toBe(
       actualValue,
       expectedValue,
-      `Value should be ${expectedValue}`,
+      `Range should generate value ${expectedValue} in sequence`,
     );
   }
 
-  // Check that the range is exhausted
-  Assert.assertIsTrue(range.next().done, "Range should be exhausted");
-}
+  expect.toBeTruthy(
+    range.next().done,
+    "Range should be exhausted after generating all values",
+  );
+});
 
-// Run the test
-testRange();
+// Run all tests
+runner.run();

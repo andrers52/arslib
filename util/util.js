@@ -183,11 +183,17 @@ Util.linearConversionWithMaxAndMin = ({
  * @returns {string} Plain text with HTML tags removed
  */
 Util.removeTagsFromString = (html) => {
-  let tmp = document.createElement("DIV");
-  tmp.innerHTML = html;
-  let resultText = tmp.textContent || tmp.innerText || "";
-  tmp.remove();
-  return resultText;
+  // Check if we're in a browser environment
+  if (typeof document !== "undefined") {
+    let tmp = document.createElement("DIV");
+    tmp.innerHTML = html;
+    let resultText = tmp.textContent || tmp.innerText || "";
+    tmp.remove();
+    return resultText;
+  } else {
+    // Fallback for Node.js environment - use regex to strip tags
+    return html.replace(/<[^>]*>/g, "");
+  }
 };
 
 /**
