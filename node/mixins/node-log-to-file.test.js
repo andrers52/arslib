@@ -4,6 +4,47 @@ import { NodeLogToFile } from "./node-log-to-file.js";
 
 const runner = new TestRunner();
 
+// Cleanup function to remove test-generated log files
+async function cleanup() {
+  if (Platform.isNode()) {
+    try {
+      const { default: fs } = await import("fs");
+      const { default: path } = await import("path");
+
+      // Remove individual log files created during tests
+      const logFiles = [
+        "log.txt",
+        "./log/testEntity_testDesc_val1_val2.txt",
+        "./log/testEntity_testDesc_value1_value2.txt",
+        "./log/testEntity_testDesc_value1.txt",
+        "./log/testEntity_testDescription_value1_value2.txt",
+        "./log/entity1_desc1_val1.txt",
+        "./log/entity2_desc2_val1.txt",
+      ];
+
+      for (const file of logFiles) {
+        if (fs.existsSync(file)) {
+          fs.unlinkSync(file);
+        }
+      }
+
+      // Remove log directory if it exists and is empty
+      if (fs.existsSync("./log")) {
+        try {
+          const files = fs.readdirSync("./log");
+          if (files.length === 0) {
+            fs.rmdirSync("./log");
+          }
+        } catch (error) {
+          // Directory might not be empty or other error, ignore
+        }
+      }
+    } catch (error) {
+      // Ignore cleanup errors
+    }
+  }
+}
+
 runner.test(
   "NodeLogToFile should only work in Node.js environment",
   async () => {
@@ -267,4 +308,7 @@ runner.test("NodeLogToFile startRightAway parameter works", async () => {
 });
 
 // Run all tests
-runner.run();
+runner.run().then(() => {
+  // Cleanup after tests
+  cleanup();
+});

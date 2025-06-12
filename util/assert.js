@@ -6,10 +6,8 @@ var Assert = {};
 
 // set this to disable asserts globally
 Assert.disableAllVerifications = false;
-// set this to enable test mode
+// set this to enable test mode (prevents process.exit when inside test runner)
 Assert.testMode = false;
-// set this to indicate we're inside a test runner (prevents process.exit)
-Assert.insideTestRunner = false;
 
 /**
  * Basic assertion function that throws an error if expression is falsy
@@ -22,9 +20,8 @@ Assert.assert = (exp, message = "Error") => {
   if (Assert.disableAllVerifications) return; //go faster!
   if (exp !== 0 && (!exp || typeof exp === "undefined")) {
     const error = new Error("Test failed: " + message);
-    // In test mode, don't call process.exit if we're inside a try-catch context
-    // This allows test runners to properly handle thrown errors
-    if (Assert.testMode && Platform.isNode() && !Assert.insideTestRunner) {
+    // In test mode, don't call process.exit to allow test runners to handle errors properly
+    if (!Assert.testMode && Platform.isNode()) {
       console.error("Test failed: " + message);
       console.error(error.stack);
       process.exit(1); // exit with error code 1, so that the test fails

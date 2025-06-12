@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.1] - 2025-06-12
+
+### Fixed
+
+- **Assert.js**: Consolidated redundant `testMode` and `insideTestRunner` variables into single `testMode` variable for cleaner, more maintainable code
+- **Test Cleanup**: Added automatic cleanup of test-generated log files after test completion
+  - `node-console-log.test.js` now removes `log.txt` after tests
+  - `node-log-to-file.test.js` now removes all test log files and directories after tests
+
+### Changed
+
+- **Documentation**: Significantly enhanced README.md with comprehensive module documentation, better structure, usage examples, and professional presentation
+- **Test Environment**: Tests now maintain clean workspace by automatically removing generated files
+
 ## [0.5.0] - 2025-06-12
 
 ### Fixed

@@ -6,6 +6,20 @@ const runner = new TestRunner();
 // Store original console.log for restoration
 const originalConsoleLog = console.log;
 
+// Cleanup function to remove test-generated log files
+async function cleanup() {
+  if (Platform.isNode()) {
+    try {
+      const { default: fs } = await import("fs");
+      if (fs.existsSync("log.txt")) {
+        fs.unlinkSync("log.txt");
+      }
+    } catch (error) {
+      // Ignore cleanup errors
+    }
+  }
+}
+
 runner.test(
   "NodeConsoleLog should only work in Node.js environment",
   async () => {
@@ -100,4 +114,7 @@ runner.test(
 );
 
 // Run all tests
-runner.run();
+runner.run().then(() => {
+  // Cleanup after tests
+  cleanup();
+});

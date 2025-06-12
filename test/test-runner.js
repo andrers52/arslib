@@ -17,10 +17,8 @@ class TestRunner {
     this.startTime = Date.now();
     this.currentTestName = "";
 
-    // Enable test mode for better error reporting
+    // Enable test mode to prevent Assert from calling process.exit
     Assert.testMode = true;
-    // Prevent Assert from calling process.exit during test execution
-    Assert.insideTestRunner = true;
   }
 
   /**
