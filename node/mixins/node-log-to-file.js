@@ -4,45 +4,32 @@
 // Usage: import
 // '<path-to-arslib>/arslib/node/node-log-to-file.js'.
 // inside the object you want to add this feature:
-// NodeLogToFile.call(this, '<dataDescription>','<entityName>', [<valueToLog1>,...<valueToLogN>], startRightAway = false)
+// await NodeLogToFile.call(this, '<dataDescription>','<entityName>', [<valueToLog1>,...<valueToLogN>], startRightAway = false)
 // it will generate a file called <entityName>_<valueToLog1>..._<valueToLogN>.log in the cwd/log directory
 // to log just call
 // 'this.log({<valueToLog1>: <value1>,..,<valueToLog1>: <value1>})'
 // To start logging you need to call this.startLoggin()
 // or call NodeLogToFile with startRightAway = true
 
+import { Assert } from "../../assert.js"; // Corrected path
+import { Platform } from "../../platform.js"; // Corrected path
 import { Time } from "../../time/time.js";
-import { Assert } from "../../util/assert.js";
-import { Platform } from "../../util/platform.js";
 
 /**
  * Node.js LogToFile mixin: Adds structured logging to file functionality
  * Creates a log file in cwd/log directory with timestamped entries
+ * @this {object} The object to which logging functionality will be added.
  * @param {string} entityName - Name identifier for the entity being logged
  * @param {string} dataDescription - Description of the data being logged
  * @param {string[]} valuesToLog - Array of property names to log
- * @param {boolean} startRightAway - Whether to start logging immediately (default: false)
+ * @param {boolean} [startRightAway=false] - Whether to start logging immediately (default: false)
  * @example
- * // Usage: import '<path-to-arslib>/arslib/node/node-log-to-file.js'.
+ * // Usage: import { NodeLogToFile } from '<path-to-arslib>/arslib/node/mixins/node-log-to-file.js';
  * // inside the object you want to add this feature:
- * // await NodeLogToFile.call(this, '<dataDescription>','<entityName>', [<valueToLog1>,...<valueToLogN>], startRightAway = false)
- * // it will generate a file called <entityName>_<valueToLog1>..._<valueToLogN>.log in the cwd/log directory
- * // to log just call 'this.log({<valueToLog1>: <value1>,..,<valueToLogN>: <valueN>})'
- * // To start logging you need to call this.startLogging() or call NodeLogToFile with startRightAway = true
+ * // await NodeLogToFile.call(thisObject, 'entityName', 'dataDescription', ['valueToLog1', 'valueToLogN'], false);
+ * // to log just call 'thisObject.log({valueToLog1: value1, valueToLogN: valueN})'
+ * // To start logging you need to call thisObject.enableLog() or apply the mixin with startRightAway = true
  */
-// node LogToFile mixin:
-// Adds a 'log' method that sends the current time and its argument
-// to the file name specified at creation.
-// Usage: import
-// '<path-to-arslib>/arslib/node/node-log-to-file.js'.
-// inside the object you want to add this feature:
-// NodeLogToFile.call(this, '<dataDescription>','<entityName>', [<valueToLog1>,...<valueToLogN>], startRightAway = false)
-// it will generate a file called <entityName>_<valueToLog1>..._<valueToLogN>.log in the cwd/log directory
-// to log just call
-// 'this.log({<valueToLog1>: <value1>,..,<valueToLog1>: <value1>})'
-// To start logging you need to call this.startLoggin()
-// or call NodeLogToFile with startRightAway = true
-
 async function NodeLogToFile(
   entityName,
   dataDescription,
@@ -50,61 +37,105 @@ async function NodeLogToFile(
   startRightAway = false,
 ) {
   if (!Platform.isNode()) {
-    console.log("These functions only work in Node");
+    // console.warn("NodeLogToFile: Mixin applied in a non-Node.js environment. Logging will be disabled.");
+    this.enableLog = () => {
+      /* console.warn("NodeLogToFile: Logging not available in this environment."); */
+    };
+    this.disableLog = () => {};
+    this.log = () => {
+      /* console.warn("NodeLogToFile: Logging not available in this environment."); */
+    };
     return;
   }
 
   const { default: fs } = await import("fs");
+  const { default: path } = await import("path"); // For robust path joining
 
   Assert.assertIsString(
-    dataDescription,
-    "Error: dataDescription is required to create the file",
+    entityName,
+    "Error: entityName is required for the log file name.",
   );
-
+  Assert.assertIsString(
+    dataDescription,
+    "Error: dataDescription is required to create the file header.",
+  );
   Assert.assertIsArray(
     valuesToLog,
-    "Error: Values to log names are required to create the file",
+    "Error: valuesToLog (array of property names) is required.",
   );
-  Assert.assert(Platform.isNode(), "This mixin only works in Node");
 
   let enabled = startRightAway;
-  let descriptionLine = "time";
-  let valuesToLogStr = "";
+  let descriptionHeader = "time";
+  let valuesToLogFilenamePart = "";
   for (let valueToLog of valuesToLog) {
-    valuesToLogStr += "_" + valueToLog;
-    descriptionLine += "\t" + valueToLog;
+    valuesToLogFilenamePart += "_" + valueToLog;
+    descriptionHeader += "\\t" + valueToLog;
   }
-  descriptionLine += "\n";
+  descriptionHeader += "\\n";
 
-  let fileToLog = `./log/${entityName}_${dataDescription}${valuesToLogStr}.txt`;
+  const logDir = "./log";
+  let fileToLog;
 
-  // create file
-  fs.writeFile(fileToLog, descriptionLine, (err) => {
-    if (err) console.log(err);
-  });
+  try {
+    // Ensure log directory exists
+    if (!fs.existsSync(logDir)) {
+      await fs.promises.mkdir(logDir, { recursive: true });
+    }
+
+    const fileName = `${entityName}_${dataDescription}${valuesToLogFilenamePart}.txt`;
+    fileToLog = path.join(logDir, fileName);
+
+    // Create/truncate file with header
+    await fs.promises.writeFile(fileToLog, descriptionHeader);
+  } catch (err) {
+    console.error(
+      `NodeLogToFile: Error initializing log file '${fileToLog || "unknown"}':`,
+      err,
+    );
+    // Define no-op methods if setup fails
+    this.enableLog = () =>
+      console.error("NodeLogToFile: Logging disabled due to setup error.");
+    this.disableLog = () => {};
+    this.log = () =>
+      console.error("NodeLogToFile: Logging disabled due to setup error.");
+    return;
+  }
 
   // *** INTERFACE ***
   this.enableLog = () => {
     enabled = true;
   };
+
   this.disableLog = () => {
     enabled = false;
   };
+
   this.log = (values) => {
     if (!enabled) return;
-    Assert.assertIsObject(values, "Error: log needs an object to register");
-    Assert.assertHasProperties(values, valuesToLog, "Error: value missing");
+    Assert.assertIsObject(
+      values,
+      "Error: log needs an object to register values.",
+    );
+    Assert.assertHasProperties(
+      values,
+      valuesToLog,
+      "Error: One or more specified valuesToLog are missing from the provided log data object.",
+    );
     let dataLine = "";
     for (let valueToLog of valuesToLog) {
-      dataLine += "\t" + values[valueToLog];
+      dataLine +=
+        "\\t" +
+        (values[valueToLog] !== undefined ? values[valueToLog] : "undefined");
     }
-    fs.appendFileSync(
-      fileToLog,
-      `${Time.currentTime()}${dataLine} \n`,
-      (err) => {
-        if (err) console.log(err);
-      },
-    );
+    try {
+      fs.appendFileSync(fileToLog, `${Time.currentTime()}${dataLine} \\n`);
+    } catch (err) {
+      console.error(
+        `NodeLogToFile: Error appending to log file '${fileToLog}':`,
+        err,
+      );
+      // Optionally disable logging or handle error
+    }
   };
 }
 export { NodeLogToFile };

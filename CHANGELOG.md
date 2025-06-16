@@ -5,7 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.6.0]
+
+### Added
+
+- **TestRunner**: Added `beforeEach(fn)` and `afterEach(fn)` methods to `TestRunner` for setting up and tearing down test contexts, enhancing test structure and reusability.
+- **Browser Module Tests**: Created and updated tests for all browser-specific modules (`browser-util.test.js`, `canvas-util.test.js`, `cookie.test.js`, `file-store.test.js`, `image-util.test.js`, `sound.test.js`, `persistence.test.js`) to verify they export an empty object in Node.js and function correctly in browser-like environments (using mocks where appropriate).
+
+### Changed
+
+- **Browser Modules Refactor**: Refactored browser-specific modules (`arslib/browser/*`) to conditionally define their exports. They now export an empty object (`{}`) when running in a Node.js environment and their full functionality in a browser environment. This ensures that attempting to import these modules in Node.js does not cause errors due to missing browser-specific globals like `window` or `document`.
+- **Test Standardization**: All browser module test files (`*.test.js`) were updated or created to use the custom `TestRunner` and its `expect` API, replacing any previous Mocha-style or manual assertion patterns. This includes fixing `ReferenceError` issues for `describe` and `it`.
+
+### Fixed
+
+- **Illegal Return Statement**: Removed top-level `return` statements from browser modules (e.g., `sound.js`, `persistence.js`, `cookie.js`) that caused `SyntaxError: Illegal return statement` when these modules were processed or imported in certain contexts. Logic is now correctly wrapped within the `if (!Platform.isNode()) { ... }` block.
+- **Node.js Module Behavior**: Ensured Node.js specific modules (e.g., `node-http-request.js`, `node-console-log.js`, `mixins/node-log-to-file.js`) are innocuous or no-ops when accidentally imported or run in a browser environment.
 
 ## [0.5.2] - 2025-06-12
 

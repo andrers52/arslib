@@ -1,5 +1,5 @@
-import { TestRunner, expect } from "../test/test-runner.js";
 import { Random } from "./random.js";
+import { TestRunner, expect } from "./test/test-runner.js";
 
 const runner = new TestRunner();
 

@@ -1,10 +1,13 @@
 "use strict";
 
+import { Platform } from "../platform.js";
+
 /**
  * FileStore constructor - Creates an IndexedDB-based file storage system
- * @constructor
  */
-function FileStore() {
+let FileStore = {};
+
+if (!Platform.isNode()) {
   // Browser compatibility setup
   if (!window.indexedDB) {
     window.indexedDB =
@@ -81,7 +84,7 @@ function FileStore() {
    * Checks if IndexedDB is available in the current browser
    * @returns {boolean} True if IndexedDB is supported, false otherwise
    */
-  this.isAvailable = function () {
+  FileStore.isAvailable = function () {
     return !!window.indexedDB;
   };
 
@@ -92,7 +95,12 @@ function FileStore() {
    * @param {Function} successCallback - Callback function called on successful storage
    * @param {Function} errorCallback - Callback function called on error
    */
-  this.putFile = function (identifier, blob, successCallback, errorCallback) {
+  FileStore.putFile = function (
+    identifier,
+    blob,
+    successCallback,
+    errorCallback,
+  ) {
     const operation = {
       execute: () => {
         const transaction = db.transaction(["mimi"], "readwrite");
@@ -116,7 +124,7 @@ function FileStore() {
    * @param {Function} successCallback - Callback function called with the retrieved blob on success
    * @param {Function} errorCallback - Callback function called on error
    */
-  this.getFile = function (identifier, successCallback, errorCallback) {
+  FileStore.getFile = function (identifier, successCallback, errorCallback) {
     const operation = {
       execute: () => {
         const transaction = db.transaction(["mimi"], "readonly");

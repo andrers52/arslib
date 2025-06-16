@@ -38,6 +38,7 @@ To see all available exports, check `index.js` in the package root folder.
 ### Data Structures
 
 - **Fifo** - First-In-First-Out queue implementation
+- **OrderedArray** - Utilities for working with sorted arrays (e.g., binary search)
 
 ### Enhancements
 
@@ -73,13 +74,24 @@ npm test
 
 ### Creating New Tests
 
-arslib uses a custom, zero-dependency test runner with a modern expect API:
+arslib uses a custom, zero-dependency test runner with a modern expect API.
+It also supports `beforeEach` and `afterEach` for setting up and tearing down test contexts.
 
 ```javascript
 import { TestRunner, expect } from "../test/test-runner.js";
 import { YourModule } from "./your-module.js";
 
 const runner = new TestRunner();
+
+runner.beforeEach(() => {
+  // Setup code to run before each test
+  // e.g., mock browser globals like window or localStorage
+});
+
+runner.afterEach(() => {
+  // Teardown code to run after each test
+  // e.g., restore original globals
+});
 
 runner.test("Your test description", () => {
   const result = YourModule.someFunction(5, 10);

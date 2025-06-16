@@ -8,7 +8,7 @@
       "type": "node",
       "request": "launch",
       "name": "Run Single Test File",
-      "program": "${workspaceFolder}/util/language-construct.test.js",
+      "program": "${workspaceFolder}/language-construct.test.js",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
     }

@@ -1,7 +1,7 @@
 "use strict";
 
-import { Assert } from "../util/assert.js";
-import { Random } from "../util/random.js";
+import { Assert } from "../assert.js";
+import { Random } from "../random.js";
 
 var EArray = {};
 

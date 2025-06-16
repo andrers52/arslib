@@ -16,21 +16,21 @@ export { NodeHttpRequest } from "./node/node-http-request.js";
 export { TimeConstrainedAction } from "./time/time-constrained-action.js";
 export { Time } from "./time/time.js";
 // util
-export { Assert } from "./util/assert.js";
-export { BrowserUtil } from "./util/browser-util.js";
-export { CanvasUtil } from "./util/canvas-util.js";
-export { CommUtil } from "./util/comm-util.js";
-export { Cookie } from "./util/cookie.js";
-export { ImageUtil } from "./util/image-util.js";
-export { LanguageConstruct } from "./util/language-construct.js";
-export { OrderedArray } from "./util/ordered-array.js";
-export { Persistence } from "./util/persistence.js";
-export { Platform } from "./util/platform.js";
-export { Random } from "./util/random.js";
-export { Sound } from "./util/sound.js";
-export { Util } from "./util/util.js";
+export { Assert } from "./assert.js";
+export { BrowserUtil } from "./browser/browser-util.js";
+export { CanvasUtil } from "./browser/canvas-util.js";
+export { Cookie } from "./browser/cookie.js";
+export { ImageUtil } from "./browser/image-util.js";
+export { Persistence } from "./browser/persistence.js";
+export { Sound } from "./browser/sound.js";
+export { CommUtil } from "./comm/comm-util.js";
+export { OrderedArray } from "./data-structures/ordered-array.js";
+export { LanguageConstruct } from "./language-construct.js";
+export { Platform } from "./platform.js";
+export { Random } from "./random.js";
+export { Util } from "./util.js";
 
-// util/singleton
-export { CommWSUtil } from "./util/comm-ws-util.js";
-export { FileStore } from "./util/file-store.js";
-export { Localization } from "./util/localization.js";
+// singleton
+export { FileStore } from "./browser/file-store.js";
+export { CommWSUtil } from "./comm/comm-ws-util.js";
+export { Localization } from "./localization.js";

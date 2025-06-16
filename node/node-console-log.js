@@ -4,8 +4,8 @@
 // after that everything logged will also be sent to a 'log.txt'.
 // Also, the 'log.txt' file is recreated everytime the program is run.
 
+import { Platform } from "../platform.js";
 import { Time } from "../time/time.js";
-import { Platform } from "../util/platform.js";
 
 /**
  * Overrides console.log in Node.js to also write to 'log.txt' file

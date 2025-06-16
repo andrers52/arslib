@@ -1,4 +1,4 @@
-import { TestRunner, expect } from "../test/test-runner.js";
+import { TestRunner, expect } from "./test/test-runner.js";
 import { Util } from "./util.js";
 
 const runner = new TestRunner();

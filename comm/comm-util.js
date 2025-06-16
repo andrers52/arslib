@@ -1,4 +1,4 @@
-import { Assert } from "./assert.js";
+import { Assert } from "../assert.js";
 
 /**
  * Utility class for HTTP communication with JSON APIs

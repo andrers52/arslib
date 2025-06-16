@@ -3,8 +3,8 @@
  * Uses the existing Assert.js library for all assertions
  */
 
-import { Assert } from "../util/assert.js";
-import { Platform } from "../util/platform.js";
+import { Assert } from "../assert.js";
+import { Platform } from "../platform.js";
 
 /**
  * Simple test runner that integrates with arslib's Assert utility
@@ -16,6 +16,24 @@ class TestRunner {
     this.failed = 0;
     this.startTime = Date.now();
     this.currentTestName = "";
+    this.beforeEachFn = null;
+    this.afterEachFn = null;
+  }
+
+  /**
+   * Sets a function to run before each test
+   * @param {Function} fn - Function to run before each test (can be async)
+   */
+  beforeEach(fn) {
+    this.beforeEachFn = fn;
+  }
+
+  /**
+   * Sets a function to run after each test
+   * @param {Function} fn - Function to run after each test (can be async)
+   */
+  afterEach(fn) {
+    this.afterEachFn = fn;
   }
 
   /**
@@ -32,12 +50,18 @@ class TestRunner {
    * @returns {Promise<boolean>} True if all tests pass
    */
   async run() {
-    console.log(`\n🧪 Running ${this.tests.length} tests...\n`);
+    console.log(`\\n🧪 Running ${this.tests.length} tests...\\n`);
 
     for (const { name, testFn } of this.tests) {
       this.currentTestName = name;
       try {
+        if (this.beforeEachFn) {
+          await this.beforeEachFn();
+        }
         await testFn();
+        if (this.afterEachFn) {
+          await this.afterEachFn();
+        }
         console.log(`✅ ${name}`);
         this.passed++;
       } catch (error) {

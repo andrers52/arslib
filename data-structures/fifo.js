@@ -1,4 +1,4 @@
-import { Assert } from "../util/assert.js";
+import { Assert } from "../assert.js";
 
 /**
  * @param {number} size

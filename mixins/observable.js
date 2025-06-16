@@ -1,6 +1,6 @@
 // Usage: Observable.call(<object_to_affect>)
 
-import { Assert } from "../util/assert.js";
+import { Assert } from "../assert.js";
 
 function Observable() {
   this.observers = [];

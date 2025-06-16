@@ -22,6 +22,17 @@ import { YourModule } from "./your-module.js";
 
 const runner = new TestRunner();
 
+// Optional: Setup and Teardown
+runner.beforeEach(() => {
+  // This function runs before each test
+  // Example: Initialize a mock environment
+});
+
+runner.afterEach(() => {
+  // This function runs after each test
+  // Example: Clean up mocks or reset state
+});
+
 runner.test("Test description", () => {
   const result = YourModule.someFunction();
   expect.toBe(result, expectedValue);

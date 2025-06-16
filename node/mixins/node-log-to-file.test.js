@@ -1,5 +1,5 @@
+import { Platform } from "../../platform.js";
 import { TestRunner, expect } from "../../test/test-runner.js";
-import { Platform } from "../../util/platform.js";
 import { NodeLogToFile } from "./node-log-to-file.js";
 
 const runner = new TestRunner();
