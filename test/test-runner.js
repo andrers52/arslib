@@ -131,11 +131,38 @@ const expect = {
    * @param {string} [message] - Optional custom error message
    */
   toEqual(actual, expected, message) {
-    Assert.assertIsEquivalent(
-      actual,
-      expected,
-      message || `Expected ${expected}, but got ${actual}`,
-    );
+    if (Array.isArray(actual) && Array.isArray(expected)) {
+      Assert.assertArraysEqual(
+        actual,
+        expected,
+        message ||
+          `Expected arrays to be equal. Expected ${JSON.stringify(
+            expected,
+          )}, but got ${JSON.stringify(actual)}`,
+      );
+    } else if (
+      typeof actual === "object" &&
+      actual !== null &&
+      typeof expected === "object" &&
+      expected !== null &&
+      !Array.isArray(actual) &&
+      !Array.isArray(expected)
+    ) {
+      Assert.assertObjectsEqual(
+        actual,
+        expected,
+        message ||
+          `Expected objects to be equal. Expected ${JSON.stringify(
+            expected,
+          )}, but got ${JSON.stringify(actual)}`,
+      );
+    } else {
+      Assert.assertIsEquivalent(
+        actual,
+        expected,
+        message || `Expected ${expected}, but got ${actual}`,
+      );
+    }
   },
 
   /**

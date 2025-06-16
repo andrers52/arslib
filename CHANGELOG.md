@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.1] - 2025-06-15
+
+### Fixed
+
+- **Test Runner**: Improved `expect.toEqual` to correctly perform deep comparisons for objects and arrays by using new `Assert.assertObjectsEqual` and existing `Assert.assertArraysEqual` methods.
+- **Assert.js**: Added `Assert.assertObjectsEqual` for deep object comparison, enhancing the accuracy of test assertions.
+
+### Changed
+
+- **Platform.js**: Added `isBrowser` and `isWorker` detection methods.
+
 ## [0.6.0]
 
 ### Added

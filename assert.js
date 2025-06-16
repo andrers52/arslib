@@ -507,6 +507,70 @@ Assert.assertArraysEqual = (
 };
 
 /**
+ * Asserts that two objects are equal (same properties and values)
+ * @param {Object} actual - Actual object
+ * @param {Object} expected - Expected object
+ * @param {string} message - Error message if objects are not equal
+ */
+Assert.assertObjectsEqual = (
+  actual,
+  expected,
+  message = "Objects should be equal",
+) => {
+  Assert.assertIsObject(actual, "Expected actual to be an object");
+  Assert.assertIsObject(expected, "Expected expected to be an object");
+
+  const actualKeys = Object.keys(actual);
+  const expectedKeys = Object.keys(expected);
+
+  Assert.assertIsEqual(
+    actualKeys.length,
+    expectedKeys.length,
+    message + ": Objects should have the same number of keys",
+  );
+
+  for (const key of expectedKeys) {
+    Assert.assertHasProperty(
+      actual,
+      key,
+      message + `: Missing key "${key}" in actual object`,
+    );
+    if (
+      typeof actual[key] === "object" &&
+      actual[key] !== null &&
+      typeof expected[key] === "object" &&
+      expected[key] !== null
+    ) {
+      if (Array.isArray(actual[key]) && Array.isArray(expected[key])) {
+        Assert.assertArraysEqual(
+          actual[key],
+          expected[key],
+          message + `: Property "${key}" should be equal`,
+        );
+      } else if (!Array.isArray(actual[key]) && !Array.isArray(expected[key])) {
+        Assert.assertObjectsEqual(
+          actual[key],
+          expected[key],
+          message + `: Property "${key}" should be equal`,
+        );
+      } else {
+        Assert.assert(
+          false,
+          message + `: Property "${key}" type mismatch (array vs object)`,
+        );
+      }
+    } else {
+      Assert.assertIsEqual(
+        actual[key],
+        expected[key],
+        message +
+          `: Property "${key}" should be equal (expected ${expected[key]}, got ${actual[key]})`,
+      );
+    }
+  }
+};
+
+/**
  * Asserts that a value matches a regular expression pattern
  * @param {string} string - String to test
  * @param {RegExp|string} pattern - Regular expression pattern

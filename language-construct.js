@@ -1,5 +1,5 @@
-import { EArray } from "../enhancements/e-array.js";
 import { Assert } from "./assert.js";
+import { EArray } from "./enhancements/e-array.js";
 
 var LanguageConstruct = {};
 
