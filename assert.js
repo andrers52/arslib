@@ -748,6 +748,19 @@ Assert.assertThrowsWithMessage = (
 };
 
 /**
+ * Asserts that a string is valid JSON
+ * @param {string} jsonString - The string to test
+ * @param {string} message - Error message if not valid JSON
+ */
+Assert.assertIsValidJSON = (jsonString, message = "Error: invalid JSON string") => {
+  try {
+    JSON.parse(jsonString);
+  } catch (e) {
+    Assert.assert(false, message + ": " + e.message);
+  }
+};
+
+/**
  * Disables all assertion functions by replacing them with no-op functions
  * Useful for production builds to remove assertion overhead
  */
