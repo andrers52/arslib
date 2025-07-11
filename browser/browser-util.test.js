@@ -1,25 +1,20 @@
+import { strict as assert } from "assert";
 import { Platform } from "../platform.js";
-import { TestRunner, expect } from "../test/test-runner.js";
 import { BrowserUtil } from "./browser-util.js";
 
-const runner = new TestRunner();
-
-runner.test(
-  "BrowserUtil should export an empty object in Node.js environment",
-  () => {
+describe("BrowserUtil", function() {
+  it("should export an empty object in Node.js environment", function() {
     if (Platform.isNode()) {
-      expect.toBe(
+      assert.strictEqual(
         Object.keys(BrowserUtil).length,
         0,
-        "BrowserUtil should be an empty object in Node.js",
+        "BrowserUtil should be an empty object in Node.js"
       );
     } else {
-      expect.toBeTruthy(
+      assert.ok(
         true,
-        "Test assertion for Node.js behavior skipped in non-Node.js environment",
+        "Test assertion for Node.js behavior skipped in non-Node.js environment"
       );
     }
-  },
-);
-
-runner.run();
+  });
+});

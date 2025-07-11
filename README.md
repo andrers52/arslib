@@ -1,6 +1,6 @@
 # arslib - Andre's JavaScript Utility Library
 
-A comprehensive, zero-dependency JavaScript utility library providing essential functions for web development, data structures, and Node.js applications.
+A comprehensive, zero-dependency JavaScript utility library providing essential functions for web development, data structures, Node.js applications, and now advanced LLM (Large Language Model) integration.
 
 ## 🚀 Quick Start
 
@@ -14,15 +14,83 @@ npm install arslib
 
 ```javascript
 // ES6 Module import (recommended)
-import { Util } from "arslib";
+import { Util, LLMService } from "arslib";
 
-// Browser import with relative path
-import { Util } from "<relative_path_to_node_modules>/arslib/util/util.js";
-
-// Example usage
-console.log(Util.limitValueToMinMax(10, 5, 15)); // 10
-console.log(Util.floatSanitize(0.1 + 0.2)); // 0.3
+// Example LLMService usage (mock LLM):
+const mockLLM = async (prompt) => `Echo: ${prompt}`;
+const llmService = new LLMService();
+await llmService.initialize({ llmFunction: mockLLM, modelName: "mock" });
+const response = await llmService.generate("Hello!");
+console.log(response); // Echo: Hello!
 ```
+
+## 🧠 LLMService (Large Language Model Integration)
+
+- Advanced LLM integration with support for memory and persistent caching, transformers.js, and test utilities.
+- See `llm/llm-service.js` for API details and usage examples.
+
+## 🛡️ ToxicTextFilter (Content Moderation)
+
+- AI-powered content filtering utility that detects and replaces toxic content with polite alternatives.
+- Features toxicity detection, scoring, batch processing, and configurable filtering modes.
+- Robust error handling and graceful degradation for production use.
+- Compatible with both mock LLMs for testing and real LLMs for production.
+
+### Quick Example:
+```javascript
+import { ToxicTextFilter } from "arslib";
+
+const filter = new ToxicTextFilter();
+const result = await filter.filterText("You are an idiot!");
+console.log(result); // "You are not very intelligent!"
+
+const score = await filter.getToxicityScore("I hate you");
+console.log(score); // 0.7
+
+const hasToxic = await filter.hasToxicContent("Hello, how are you?");
+console.log(hasToxic); // false
+```
+
+### Advanced Usage:
+```javascript
+// Batch processing
+const texts = ["Hello!", "You are stupid", "Have a great day!"];
+const filtered = await filter.filterTexts(texts);
+console.log(filtered); // ["Hello!", "You are not very smart", "Have a great day!"]
+
+// Strict mode for more aggressive filtering
+const strictResult = await filter.filterText("This is offensive", { strict: true });
+
+// Custom LLM service
+const customLLM = new YourLLMService();
+filter.setLLMService(customLLM);
+```
+
+### Suppressing ONNX Warnings
+
+When running LLMService tests or using transformers.js, you may see ONNX Runtime warnings about unused initializers. To suppress these, set the environment variable before running tests:
+
+```sh
+ORT_LOGGING_LEVEL=error npm test
+```
+
+Or use the provided npm script (see below).
+
+## 🧪 LLMService Testing
+
+arslib provides dedicated test scripts for LLMService:
+
+```bash
+npm run test:llm           # Main LLMService tests
+npm run test:llm:caching   # Caching tests
+npm run test:llm:integration # Integration tests
+npm run test:llm:all       # All LLMService tests
+npm run test:llm:real      # Run all LLMService tests with real model (set TEST_REAL_LLM=true)
+npm run test:llm:mock      # Run all LLMService tests in mock mode
+```
+
+- **Mock mode**: Fast, no real model loading (default)
+- **Real mode**: Loads actual models (set `TEST_REAL_LLM=true`)
 
 ## 📦 Available Modules
 
@@ -34,6 +102,8 @@ To see all available exports, check `index.js` in the package root folder.
 - **Assert** - Comprehensive assertion library for testing and validation
 - **Random** - Random number generation with various distributions
 - **Time** - Time manipulation and formatting utilities
+- **LLMService** - Large Language Model integration, caching, and inference
+- **ToxicTextFilter** - AI-powered content moderation and filtering
 
 ### Data Structures
 
@@ -114,6 +184,34 @@ if (BrowserFileStore.isAvailable()) {
 ```bash
 npm test
 ```
+
+### Testing LLMService
+
+```bash
+# Run all LLMService tests (recommended) - ONNX warnings filtered by default
+npm run test:llm:all
+
+# Run specific test suites - ONNX warnings filtered by default
+npm run test:llm              # Basic functionality tests
+npm run test:llm:caching      # Caching behavior tests  
+npm run test:llm:integration  # Integration tests
+
+# Test with real vs mock LLMs - ONNX warnings filtered by default
+npm run test:llm:real         # Use real transformers.js models
+npm run test:llm:mock         # Use mock LLM functions
+
+# Show all output including ONNX warnings (for debugging)
+npm run test:llm:verbose      # Unfiltered output
+
+# Test ToxicTextFilter - ONNX warnings filtered by default
+npm run test:text-filter      # Text filter tests (mock LLM)
+npm run test:text-filter:verbose # (ONNX warnings Unfiltered) text filter tests
+npm run demo:text-filter      # Run text filter demo
+```
+
+**Note:** All LLMService test scripts automatically filter out ONNX Runtime warnings for cleaner output. Use `test:llm:verbose` if you need to see the full output including warnings for debugging purposes.
+
+**ToxicTextFilter Testing:** The text filter tests use mock LLMs by default for fast, reliable testing. To test with real LLMs, set the `TEST_REAL_LLM=true` environment variable before running tests. Real LLM tests are more lenient and account for model behavior variations.
 
 ### Creating New Tests
 
@@ -230,3 +328,7 @@ arslib/
 ---
 
 **arslib** - Making JavaScript development more productive, one utility at a time. 🚀
+
+## 📝 Migration Note
+
+LLMService and its comprehensive test suite were migrated from the brainiac-engine project to arslib as of v0.9.0, making advanced LLM features available to all arslib users.

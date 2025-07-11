@@ -1,7 +1,5 @@
 import { Platform } from "../platform.js";
-import { TestRunner, expect } from "../test/test-runner.js";
-
-const runner = new TestRunner();
+import { strict as assert } from "assert";
 
 // Store original console.log for restoration
 const originalConsoleLog = console.log;
@@ -20,32 +18,25 @@ async function cleanup() {
   }
 }
 
-runner.test(
-  "NodeConsoleLog should only work in Node.js environment",
-  async () => {
+describe("NodeConsoleLog", function() {
+  after(async function() {
+    await cleanup();
+  });
+
+  it("should only work in Node.js environment", async function() {
     if (!Platform.isNode()) {
-      expect.toBeTruthy(
-        true,
-        "Test passes if not in Node.js environment - function should return early",
-      );
+      assert.ok(true, "Test passes if not in Node.js environment - function should return early");
       return;
     }
 
     // Import the module (which auto-executes the console.log override)
     const { NodeConsoleLog } = await import("./node-console-log.js");
-    expect.toBeType(
-      NodeConsoleLog,
-      "function",
-      "NodeConsoleLog should be a function",
-    );
-  },
-);
+    assert.strictEqual(typeof NodeConsoleLog, "function", "NodeConsoleLog should be a function");
+  });
 
-runner.test(
-  "NodeConsoleLog overrides console.log to also write to file",
-  async () => {
+  it("overrides console.log to also write to file", async function() {
     if (!Platform.isNode()) {
-      return; // Skip test if not in Node.js
+      this.skip(); // Skip test if not in Node.js
     }
 
     // Import fs to check file operations
@@ -53,12 +44,7 @@ runner.test(
 
     // Import the module (this will override console.log)
     const { NodeConsoleLog } = await import("./node-console-log.js");
-
-    expect.toBeType(
-      NodeConsoleLog,
-      "function",
-      "NodeConsoleLog should be a function",
-    );
+    assert.strictEqual(typeof NodeConsoleLog, "function", "NodeConsoleLog should be a function");
 
     let testPassed = false;
     try {
@@ -67,54 +53,29 @@ runner.test(
     } catch (error) {
       testPassed = false;
     }
-
-    expect.toBeTruthy(
-      testPassed,
-      "console.log should still work after being overridden",
-    );
+    assert.ok(testPassed, "console.log should still work after being overridden");
 
     try {
       await new Promise((resolve) => setTimeout(resolve, 100));
       const logExists = fs.existsSync("log.txt");
-      expect.toBeTruthy(
-        typeof logExists === "boolean",
-        "File existence check should return a boolean",
-      );
+      assert.strictEqual(typeof logExists, "boolean", "File existence check should return a boolean");
     } catch (error) {
-      expect.toBeTruthy(
-        true,
-        "File might not exist yet due to async operations, which is acceptable",
-      );
+      assert.ok(true, "File might not exist yet due to async operations, which is acceptable");
     }
-  },
-);
+  });
 
-runner.test(
-  "NodeConsoleLog creates log.txt file on initialization",
-  async () => {
+  it("creates log.txt file on initialization", async function() {
     if (!Platform.isNode()) {
-      return; // Skip test if not in Node.js
+      this.skip(); // Skip test if not in Node.js
     }
 
     const { default: fs } = await import("fs");
 
     try {
       const logExists = fs.existsSync("log.txt");
-      expect.toBeTruthy(
-        typeof logExists === "boolean",
-        "File existence check should return a boolean",
-      );
+      assert.strictEqual(typeof logExists, "boolean", "File existence check should return a boolean");
     } catch (error) {
-      expect.toBeTruthy(
-        true,
-        "Module should load without throwing errors even if file operations fail",
-      );
+      assert.ok(true, "Module should load without throwing errors even if file operations fail");
     }
-  },
-);
-
-// Run all tests
-runner.run().then(() => {
-  // Cleanup after tests
-  cleanup();
+  });
 });

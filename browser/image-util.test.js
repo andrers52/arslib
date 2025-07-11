@@ -1,28 +1,22 @@
 import { Platform } from "../platform.js";
-import { TestRunner, expect } from "../test/test-runner.js";
+import { strict as assert } from "assert";
 import { ImageUtil } from "./image-util.js";
 
-const runner = new TestRunner();
-
-runner.test(
-  "ImageUtil should export an empty object in Node.js environment",
-  () => {
+describe("ImageUtil", function() {
+  it("should export an empty object in Node.js environment", function() {
     if (Platform.isNode()) {
-      expect.toBe(
+      assert.strictEqual(
         Object.keys(ImageUtil).length,
         0,
-        "ImageUtil should be an empty object in Node.js",
+        "ImageUtil should be an empty object in Node.js"
       );
     } else {
       // In a browser environment, ImageUtil should not be empty
       // We expect at least createCanvas, createPieGraph, and createPieGraphWithEvenlyDistributedColors
-      expect.toBeGreaterThanOrEqual(
-        Object.keys(ImageUtil).length,
-        3,
-        "ImageUtil should not be an empty object in a browser environment and should have at least 3 properties",
+      assert.ok(
+        Object.keys(ImageUtil).length >= 3,
+        "ImageUtil should not be an empty object in a browser environment and should have at least 3 properties"
       );
     }
-  },
-);
-
-runner.run();
+  });
+});

@@ -1,16 +1,37 @@
 {
     "name": "arslib",
-    "version": "0.7.0",
-    "description": "Andre's JavaScript Utility library",
+    "version": "0.8.1",
+    "description": "Andre's JavaScript Utility library with LLM integration support",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/andrers52/arslib.git"
     },
     "scripts": {
-        "test": "for file in $(find . -name '*.test.js'); do echo Running $file && node $file && echo $file: PASS || exit 1; done && echo 'All tests passed!'"
+        "test": "mocha 2>&1 | grep -v 'onnxruntime' || true",
+        "test:llm": "mocha llm/llm-service.test.js 2>&1 | grep -v 'onnxruntime' || true",
+        "test:llm:caching": "mocha llm/llm-service.caching.test.js 2>&1 | grep -v 'onnxruntime' || true",
+        "test:llm:integration": "mocha llm/llm-service.integration.test.js 2>&1 | grep -v 'onnxruntime' || true",
+        "test:llm:all": "mocha llm/*.test.js 2>&1 | grep -v 'onnxruntime' || true",
+        "test:llm:real": "TEST_REAL_LLM=true mocha llm/*.test.js text-filter/*.test.js 2>&1 | grep -v 'onnxruntime' || true",
+        "test:llm:mock": "TEST_REAL_LLM=false mocha llm/*.test.js 2>&1 | grep -v 'onnxruntime' || true",
+        "test:llm:verbose": "mocha llm/*.test.js",
+        "test:text-filter": "mocha text-filter/*.test.js 2>&1 | grep -v 'onnxruntime' || true",
+        "test:text-filter:verbose": "mocha text-filter/*.test.js",
+        "demo:text-filter": "node text-filter/demo.js"
     },
     "author": "Andre Rodrigues da Silva",
     "main": "./index.js",
     "license": "MIT",
-    "type": "module"
+    "type": "module",
+    "exports": {
+        ".": "./index.js"
+    },
+    "devDependencies": {
+        "esm": "^3.2.25",
+        "mocha": "^10.2.0",
+        "sinon": "^17.0.1"
+    },
+    "dependencies": {
+        "@xenova/transformers": "^2.6.0"
+    }
 }

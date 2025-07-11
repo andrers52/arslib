@@ -1,41 +1,34 @@
 import { Platform } from "../platform.js";
-import { TestRunner, expect } from "../test/test-runner.js";
+import { strict as assert } from "assert";
 import { Cookie } from "./cookie.js";
 
-const runner = new TestRunner();
-
-runner.test("Cookie should export an empty object in Node.js", () => {
-  if (Platform.isNode()) {
-    expect.toBe(
-      Object.keys(Cookie).length,
-      0,
-      "Cookie should be an empty object in Node.js",
-    );
-  } else {
-    // In a browser environment, Cookie should not be empty
-    expect.toBeGreaterThanOrEqual(
-      Object.keys(Cookie).length,
-      2, // setCookie, getCookie
-      "Cookie should have at least 2 properties in a browser environment",
-    );
-  }
-});
-
-runner.test(
-  "Cookie should have setCookie and getCookie methods in the browser",
-  () => {
-    if (!Platform.isNode()) {
-      expect.toBe(typeof Cookie.setCookie, "function");
-      expect.toBe(typeof Cookie.getCookie, "function");
+describe("Cookie", function() {
+  it("should export an empty object in Node.js", function() {
+    if (Platform.isNode()) {
+      assert.strictEqual(
+        Object.keys(Cookie).length,
+        0,
+        "Cookie should be an empty object in Node.js"
+      );
     } else {
-      expect.toBe(true, true); // Test considered passing in Node.js as it's browser-specific
+      // In a browser environment, Cookie should not be empty
+      assert.ok(
+        Object.keys(Cookie).length >= 2,
+        "Cookie should have at least 2 properties in a browser environment"
+      );
     }
-  },
-);
+  });
 
-runner.test(
-  "setCookie and getCookie should work as expected in a browser-like environment",
-  () => {
+  it("should have setCookie and getCookie methods in the browser", function() {
+    if (!Platform.isNode()) {
+      assert.strictEqual(typeof Cookie.setCookie, "function");
+      assert.strictEqual(typeof Cookie.getCookie, "function");
+    } else {
+      assert.ok(true, "Test considered passing in Node.js as it's browser-specific");
+    }
+  });
+
+  it("should work as expected in a browser-like environment", function() {
     if (!Platform.isNode()) {
       // Mock document.cookie for browser-like environment testing
       let mockCookieStore = {};
@@ -70,35 +63,35 @@ runner.test(
       });
 
       Cookie.setCookie("testCookie1", "testValue1", 1);
-      expect.toBe(
+      assert.strictEqual(
         Cookie.getCookie("testCookie1"),
         "testValue1",
-        "Should retrieve the set cookie",
+        "Should retrieve the set cookie"
       );
 
       Cookie.setCookie("testCookie2", "testValue2", 1);
-      expect.toBe(
+      assert.strictEqual(
         Cookie.getCookie("testCookie2"),
         "testValue2",
-        "Should retrieve another set cookie",
+        "Should retrieve another set cookie"
       );
-      expect.toBe(
+      assert.strictEqual(
         Cookie.getCookie("testCookie1"),
         "testValue1",
-        "First cookie should still exist",
+        "First cookie should still exist"
       );
 
-      expect.toBe(
+      assert.strictEqual(
         Cookie.getCookie("nonExistentCookie"),
         "",
-        "Should return empty string for non-existent cookie",
+        "Should return empty string for non-existent cookie"
       );
 
       Cookie.setCookie("testCookie1", "newTestValue1", 1);
-      expect.toBe(
+      assert.strictEqual(
         Cookie.getCookie("testCookie1"),
         "newTestValue1",
-        "Should retrieve the updated cookie value",
+        "Should retrieve the updated cookie value"
       );
 
       // Test cookie deletion by setting expiration to the past
@@ -110,19 +103,17 @@ runner.test(
       // The current mock looks for "expires=Thu, 01 Jan 1970 GMT", which is a common way to delete cookies.
       // We need to ensure our setCookie with negative days results in such a string or similar.
       // For now, we assume the mock's deletion logic is hit if setCookie(-1) works as intended.
-      expect.toBe(
+      assert.strictEqual(
         Cookie.getCookie("toBeDeleted"),
         "",
-        "Cookie should be deleted after setting expiry to past",
+        "Cookie should be deleted after setting expiry to past"
       );
 
       // Clean up mock
       global.document = originalDocument;
       mockCookieStore = {};
     } else {
-      expect.toBe(true, true); // Test considered passing in Node.js
+      assert.ok(true, "Test considered passing in Node.js");
     }
-  },
-);
-
-runner.run();
+  });
+});

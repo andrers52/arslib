@@ -36,3 +36,9 @@ export { Localization } from "./localization.js";
 
 // Node.js specific exports
 export { NodeFileStore } from "./node/node-file-store.js";
+
+// LLM services
+export { LLMService, TransformersLLMService, createTransformersLLM, createTestLLM } from "./llm/index.js";
+
+// Text filtering
+export { ToxicTextFilter } from "./text-filter/index.js";
