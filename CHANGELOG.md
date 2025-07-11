@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2025-07-10
+
+### Added
+- **NodeFileStore**: New Node.js-compatible persistent file storage module (`node/node-file-store.js`) using the filesystem for caching and retrieval, with API compatible with the browser version.
+- **Comprehensive Tests**: Added `node/node-file-store.test.js` for full coverage of NodeFileStore, including edge cases and error handling.
+
+### Changed
+- **BrowserFileStore Refactor**: Renamed `browser/file-store.js` to `browser/browser-file-store.js` for clarity and consistency. Updated all imports and documentation accordingly.
+- **Exports**: Both `NodeFileStore` and `BrowserFileStore` are now exported from the main entry point (`index.js`).
+
+### Fixed
+- **Cross-Platform Caching**: Persistent caching now works in both Node.js and browser environments, with automatic selection of the appropriate FileStore implementation.
+
+### Removed
+- **browser/file-store.test.js**: Removed obsolete test file for the old browser file store implementation.
+
+
 ## [0.6.2] - 2025-07-09
 
 - Added new assert to check json input validity.

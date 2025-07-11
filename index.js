@@ -30,7 +30,9 @@ export { Platform } from "./platform.js";
 export { Random } from "./random.js";
 export { Util } from "./util.js";
 
-// singleton
-export { FileStore } from "./browser/file-store.js";
+export { BrowserFileStore } from "./browser/browser-file-store.js";
 export { CommWSUtil } from "./comm/comm-ws-util.js";
 export { Localization } from "./localization.js";
+
+// Node.js specific exports
+export { NodeFileStore } from "./node/node-file-store.js";

@@ -3,9 +3,9 @@
 import { Platform } from "../platform.js";
 
 /**
- * FileStore constructor - Creates an IndexedDB-based file storage system
+ * BrowserFileStore constructor - Creates an IndexedDB-based file storage system
  */
-let FileStore = {};
+let BrowserFileStore = {};
 
 if (!Platform.isNode()) {
   // Browser compatibility setup
@@ -84,7 +84,7 @@ if (!Platform.isNode()) {
    * Checks if IndexedDB is available in the current browser
    * @returns {boolean} True if IndexedDB is supported, false otherwise
    */
-  FileStore.isAvailable = function () {
+  BrowserFileStore.isAvailable = function () {
     return !!window.indexedDB;
   };
 
@@ -95,7 +95,7 @@ if (!Platform.isNode()) {
    * @param {Function} successCallback - Callback function called on successful storage
    * @param {Function} errorCallback - Callback function called on error
    */
-  FileStore.putFile = function (
+  BrowserFileStore.putFile = function (
     identifier,
     blob,
     successCallback,
@@ -124,7 +124,7 @@ if (!Platform.isNode()) {
    * @param {Function} successCallback - Callback function called with the retrieved blob on success
    * @param {Function} errorCallback - Callback function called on error
    */
-  FileStore.getFile = function (identifier, successCallback, errorCallback) {
+  BrowserFileStore.getFile = function (identifier, successCallback, errorCallback) {
     const operation = {
       execute: () => {
         const transaction = db.transaction(["mimi"], "readonly");
@@ -145,4 +145,4 @@ if (!Platform.isNode()) {
   };
 }
 
-export { FileStore };
+export { BrowserFileStore };

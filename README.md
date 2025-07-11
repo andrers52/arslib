@@ -56,6 +56,7 @@ To see all available exports, check `index.js` in the package root folder.
 - **NodeHttpRequest** - HTTP request utilities for Node.js
 - **NodeConsoleLog** - Enhanced console logging with file output
 - **NodeLogToFile** - File logging mixin for objects
+- **NodeFileStore** - Persistent file storage for Node.js (filesystem-based, compatible API with browser)
 
 ### Browser Utilities
 
@@ -63,6 +64,48 @@ To see all available exports, check `index.js` in the package root folder.
 - **CanvasUtil** - HTML5 Canvas helper functions
 - **ImageUtil** - Image processing utilities
 - **SoundUtil** - Audio processing utilities
+- **BrowserFileStore** - Persistent file storage for browsers (IndexedDB-based)
+
+## 🗄️ Cross-Platform Persistent Storage
+
+arslib provides a unified API for persistent file storage in both browser and Node.js environments:
+
+- Use `BrowserFileStore` in browsers (IndexedDB-backed)
+- Use `NodeFileStore` in Node.js (filesystem-backed)
+
+Both modules expose the following API:
+
+```js
+isAvailable(): boolean // Check if persistent storage is available
+putFile(identifier, blob, successCallback, errorCallback) // Store a file/blob
+getFile(identifier, successCallback, errorCallback) // Retrieve a file/blob
+```
+
+#### Example Usage (Node.js):
+```js
+import { NodeFileStore } from "arslib";
+
+if (NodeFileStore.isAvailable()) {
+  NodeFileStore.putFile("my-key", { parts: ["hello world"] }, () => {
+    NodeFileStore.getFile("my-key", (blob) => {
+      console.log(blob.parts[0]); // "hello world"
+    });
+  });
+}
+```
+
+#### Example Usage (Browser):
+```js
+import { BrowserFileStore } from "arslib";
+
+if (BrowserFileStore.isAvailable()) {
+  BrowserFileStore.putFile("my-key", new Blob(["hello world"]), () => {
+    BrowserFileStore.getFile("my-key", (blob) => {
+      blob.text().then(console.log); // "hello world"
+    });
+  });
+}
+```
 
 ## 🧪 Testing
 
