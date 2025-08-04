@@ -1,6 +1,6 @@
 {
     "name": "arslib",
-    "version": "0.8.1",
+    "version": "0.8.2",
     "description": "Andre's JavaScript Utility library with LLM integration support",
     "repository": {
         "type": "git",

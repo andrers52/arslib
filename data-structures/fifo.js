@@ -8,6 +8,8 @@ function Fifo(size) {
   Assert.assert(size > 0, "Invalid size");
 
   this.data = new Array(size).fill(null);
+  this.nextInsertPos = 0; // Track the next position to insert
+  this.count = 0; // Track how many elements are currently in the FIFO
 
   /**
    * fifo implementation. add element to end of list, shift them all,
@@ -16,16 +18,25 @@ function Fifo(size) {
    * @returns {null|*} The removed element (if any)
    */
   this.insert = function (element) {
-    //insert element in available space
-    for (let i = 0; i < this.data.length; i++) {
-      if (this.data[i] == null) {
-        this.data[i] = element;
-        return null;
-      }
+    let removedElement = null;
+    
+    // If the FIFO is full, we need to remove the oldest element
+    if (this.count === this.data.length) {
+      removedElement = this.data[this.nextInsertPos];
     }
-    //shift elements to insert new one
-    this.data.push(element);
-    return this.data.shift();
+    
+    // Insert the new element at the tracked position
+    this.data[this.nextInsertPos] = element;
+    
+    // Update the next insert position (circular)
+    this.nextInsertPos = (this.nextInsertPos + 1) % this.data.length;
+    
+    // Update count if we're not at capacity
+    if (this.count < this.data.length) {
+      this.count++;
+    }
+    
+    return removedElement;
   };
 
   /**
@@ -34,8 +45,19 @@ function Fifo(size) {
    * @returns {null|*} The removed element (if any)
    */
   this.remove = function () {
-    this.data.push(null);
-    return this.data.shift();
+    if (this.count === 0) {
+      return null;
+    }
+    
+    // Calculate the position of the oldest element
+    const oldestPos = (this.nextInsertPos - this.count + this.data.length) % this.data.length;
+    const removedElement = this.data[oldestPos];
+    
+    // Mark the position as empty
+    this.data[oldestPos] = null;
+    this.count--;
+    
+    return removedElement;
   };
 }
 
