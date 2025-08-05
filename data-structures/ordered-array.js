@@ -7,15 +7,27 @@ var OrderedArray = {};
 // ------------------------------------------------------ //
 
 /**
- * Performs binary search on a sorted array
- * @param {any[]} array - Sorted array to search in
+ * Performs binary search on a sorted array with O(log n) time complexity.
+ * 
+ * This function implements a standard binary search algorithm that works on any sorted array.
+ * It can be configured to either find exact matches only or return the closest element's index.
+ * 
+ * @param {any[]} array - Sorted array to search in (must be in ascending order)
  * @param {any} target - Value to search for
- * @param {boolean} searchOnlyExactValue - If true, returns -1 when not found; if false, returns closest element index
- * @returns {number} Index of found element, closest element index, or -1 if not found (when searchOnlyExactValue is true)
+ * @param {boolean} searchOnlyExactValue - If true, returns -1 when exact match not found; 
+ *                                        if false, returns index of closest element
+ * @returns {number} Index of found element, closest element index, or -1 if not found 
+ *                  (when searchOnlyExactValue is true)
+ * 
+ * @example
+ * // Exact search (returns -1 if not found)
+ * OrderedArray.binarySearch([1, 3, 5, 7, 9], 5, true);  // returns 2
+ * OrderedArray.binarySearch([1, 3, 5, 7, 9], 4, true);  // returns -1
+ * 
+ * // Closest element search
+ * OrderedArray.binarySearch([1, 3, 5, 7, 9], 4, false); // returns 1 (closest to 3)
+ * OrderedArray.binarySearch([1, 3, 5, 7, 9], 6, false); // returns 2 (closest to 5)
  */
-// return index of element found, or index of closest element in the array
-// If searchOnlyExactValue === true returns the index of the element or -1 if not found,
-// otherwise return the index of the closest element
 OrderedArray.binarySearch = (array, target, searchOnlyExactValue = true) => {
   // Define Start and End Index
   let startIndex = 0;
@@ -49,10 +61,17 @@ OrderedArray.binarySearch = (array, target, searchOnlyExactValue = true) => {
 };
 
 /**
- * Finds the first index where the value is greater than or equal to the target
- * @param {number[]} array - Sorted array of numbers
+ * Finds the first index where the value is greater than or equal to the target.
+ * This is useful for finding the lower bound of a value in a sorted array.
+ * 
+ * @param {number[]} array - Sorted array of numbers (must be in ascending order)
  * @param {number} value - Target value to compare against
  * @returns {number} Index of first element >= value, or -1 if no such element exists
+ * 
+ * @example
+ * OrderedArray.findFirstIndexGreaterOrEqual([1, 3, 5, 7, 9], 4);  // returns 2 (index of 5)
+ * OrderedArray.findFirstIndexGreaterOrEqual([1, 3, 5, 7, 9], 5);  // returns 2 (index of 5)
+ * OrderedArray.findFirstIndexGreaterOrEqual([1, 3, 5, 7, 9], 10); // returns -1 (no element >= 10)
  */
 OrderedArray.findFirstIndexGreaterOrEqual = (array, value) => {
   let resultIndex = OrderedArray.binarySearch(array, value, false);
@@ -68,10 +87,17 @@ OrderedArray.findFirstIndexGreaterOrEqual = (array, value) => {
 };
 
 /**
- * Finds the last index where the value is smaller than or equal to the target
- * @param {number[]} array - Sorted array of numbers
+ * Finds the last index where the value is smaller than or equal to the target.
+ * This is useful for finding the upper bound of a value in a sorted array.
+ * 
+ * @param {number[]} array - Sorted array of numbers (must be in ascending order)
  * @param {number} value - Target value to compare against
  * @returns {number} Index of last element <= value, or -1 if no such element exists
+ * 
+ * @example
+ * OrderedArray.findLastIndexSmallerOrEqual([1, 3, 5, 7, 9], 4);  // returns 1 (index of 3)
+ * OrderedArray.findLastIndexSmallerOrEqual([1, 3, 5, 7, 9], 5);  // returns 2 (index of 5)
+ * OrderedArray.findLastIndexSmallerOrEqual([1, 3, 5, 7, 9], 0);  // returns -1 (no element <= 0)
  */
 OrderedArray.findLastIndexSmallerOrEqual = (array, value) => {
   let resultIndex = OrderedArray.binarySearch(array, value, false);
