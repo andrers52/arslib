@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0] - 2025-08-11
+
+### Added
+- FIFO: `toArrayOrdered()` method to obtain a non-mutating, chronological snapshot (oldest → newest) of the buffer contents.
+
+### Tests
+- Added tests for `toArrayOrdered()` covering empty, normal order, overflow behavior, and non-mutation.
+
 ## [0.8.2] - 2025-08-04
 
 ### Improved

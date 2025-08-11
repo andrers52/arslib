@@ -113,4 +113,41 @@ describe("Fifo", function() {
     assert.strictEqual(fifo.remove(), 2, "Should remove and return 2");
     assert.strictEqual(fifo.remove(), 3, "Should remove and return 3");
   });
+
+  it("toArrayOrdered should return elements in chronological order without mutation", function() {
+    const fifo = new Fifo(3);
+    // Empty snapshot
+    assert.deepStrictEqual(fifo.toArrayOrdered(), [], "Empty FIFO should return empty array");
+
+    fifo.insert(10);
+    fifo.insert(20);
+    assert.deepStrictEqual(
+      fifo.toArrayOrdered(),
+      [10, 20],
+      "Snapshot should list [10, 20]"
+    );
+
+    fifo.insert(30);
+    assert.deepStrictEqual(
+      fifo.toArrayOrdered(),
+      [10, 20, 30],
+      "Snapshot should list [10, 20, 30]"
+    );
+
+    // Overflow
+    fifo.insert(40); // overwrites 10
+    assert.deepStrictEqual(
+      fifo.toArrayOrdered(),
+      [20, 30, 40],
+      "After overflow, snapshot should list [20, 30, 40]"
+    );
+
+    // Ensure snapshot does not mutate
+    assert.strictEqual(fifo.remove(), 20, "Removal should still return the oldest (20)");
+    assert.deepStrictEqual(
+      fifo.toArrayOrdered(),
+      [30, 40],
+      "After removal, snapshot should list [30, 40]"
+    );
+  });
 });

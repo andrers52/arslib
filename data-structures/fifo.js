@@ -66,6 +66,28 @@ function Fifo(size) {
     
     return removedElement;
   };
+
+  /**
+   * Returns a new array with the current elements in chronological order
+   * (oldest first, newest last), without modifying the FIFO contents.
+   *
+   * @returns {Array<*>} Snapshot array of elements from oldest to newest
+   */
+  this.toArrayOrdered = function () {
+    if (this.count === 0) {
+      return [];
+    }
+
+    const ordered = [];
+    for (let i = 0; i < this.count; i++) {
+      const index = (this.nextInsertPos - this.count + i + this.data.length) % this.data.length;
+      const value = this.data[index];
+      if (value !== null) {
+        ordered.push(value);
+      }
+    }
+    return ordered;
+  };
 }
 
 export { Fifo };
