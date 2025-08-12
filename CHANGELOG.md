@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.1] - 2025-08-12
+
+### Changed
+- **Documentation Update**: Updated README.md to accurately reflect current testing framework setup
+  - Corrected outdated references to custom test runner
+  - Updated test examples to use current Mocha framework syntax
+  - Fixed assertions section to reflect Sinon usage instead of Chai
+  - Updated project structure and dependencies information
+
+### Improved
+- **Documentation Accuracy**: README.md now correctly documents the existing Mocha + Sinon testing setup
+- **Developer Experience**: Clear and accurate information about current testing capabilities
+- **Project Clarity**: Better understanding of actual dependencies and testing framework in use
+
 ## [0.9.0] - 2025-08-11
 
 ### Added
