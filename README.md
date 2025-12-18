@@ -1,6 +1,6 @@
 # arslib - Andre's JavaScript Utility Library
 
-A comprehensive, zero-dependency JavaScript utility library providing essential functions for web development, data structures, and Node.js applications.
+A comprehensive, zero-dependency JavaScript utility library providing essential functions for web development, data structures, Node.js applications, and now advanced LLM (Large Language Model) integration.
 
 ## 🚀 Quick Start
 
@@ -14,15 +14,87 @@ npm install arslib
 
 ```javascript
 // ES6 Module import (recommended)
-import { Util } from "arslib";
+import { Util, LLMService } from "arslib";
 
-// Browser import with relative path
-import { Util } from "<relative_path_to_node_modules>/arslib/util/util.js";
-
-// Example usage
-console.log(Util.limitValueToMinMax(10, 5, 15)); // 10
-console.log(Util.floatSanitize(0.1 + 0.2)); // 0.3
+// Example LLMService usage (mock LLM):
+const mockLLM = async (prompt) => `Echo: ${prompt}`;
+const llmService = new LLMService();
+await llmService.initialize({ llmFunction: mockLLM, modelName: "mock" });
+const response = await llmService.generate("Hello!");
+console.log(response); // Echo: Hello!
 ```
+
+## 🧠 LLMService (Large Language Model Integration)
+
+- Advanced LLM integration with support for memory and persistent caching, transformers.js, and test utilities.
+- See `llm/llm-service.js` for API details and usage examples.
+
+## 🛡️ ToxicTextFilter (Content Moderation)
+
+- AI-powered content filtering utility that detects and replaces toxic content with polite alternatives.
+- Features toxicity detection, scoring, batch processing, and configurable filtering modes.
+- Robust error handling and graceful degradation for production use.
+- Compatible with both mock LLMs for testing and real LLMs for production.
+
+### Quick Example:
+
+```javascript
+import { ToxicTextFilter } from "arslib";
+
+const filter = new ToxicTextFilter();
+const result = await filter.filterText("You are an idiot!");
+console.log(result); // "You are not very intelligent!"
+
+const score = await filter.getToxicityScore("I hate you");
+console.log(score); // 0.7
+
+const hasToxic = await filter.hasToxicContent("Hello, how are you?");
+console.log(hasToxic); // false
+```
+
+### Advanced Usage:
+
+```javascript
+// Batch processing
+const texts = ["Hello!", "You are stupid", "Have a great day!"];
+const filtered = await filter.filterTexts(texts);
+console.log(filtered); // ["Hello!", "You are not very smart", "Have a great day!"]
+
+// Strict mode for more aggressive filtering
+const strictResult = await filter.filterText("This is offensive", {
+  strict: true,
+});
+
+// Custom LLM service
+const customLLM = new YourLLMService();
+filter.setLLMService(customLLM);
+```
+
+### Suppressing ONNX Warnings
+
+When running LLMService tests or using transformers.js, you may see ONNX Runtime warnings about unused initializers. To suppress these, set the environment variable before running tests:
+
+```sh
+ORT_LOGGING_LEVEL=error npm test
+```
+
+Or use the provided npm script (see below).
+
+## 🧪 LLMService Testing
+
+arslib provides dedicated test scripts for LLMService:
+
+```bash
+npm run test:llm           # Main LLMService tests
+npm run test:llm:caching   # Caching tests
+npm run test:llm:integration # Integration tests
+npm run test:llm:all       # All LLMService tests
+npm run test:llm:real      # Run all LLMService tests with real model (set TEST_REAL_LLM=true)
+npm run test:llm:mock      # Run all LLMService tests in mock mode
+```
+
+- **Mock mode**: Fast, no real model loading (default)
+- **Real mode**: Loads actual models (set `TEST_REAL_LLM=true`)
 
 ## 📦 Available Modules
 
@@ -34,6 +106,8 @@ To see all available exports, check `index.js` in the package root folder.
 - **Assert** - Comprehensive assertion library for testing and validation
 - **Random** - Random number generation with various distributions
 - **Time** - Time manipulation and formatting utilities
+- **LLMService** - Large Language Model integration, caching, and inference
+- **ToxicTextFilter** - AI-powered content moderation and filtering
 
 ### Data Structures
 
@@ -117,76 +191,86 @@ if (BrowserFileStore.isAvailable()) {
 npm test
 ```
 
-### Creating New Tests
+### Testing LLMService
 
-arslib uses [Mocha](https://mochajs.org/) as the test framework with ES modules support. Tests are configured via `.mocharc.json` and support standard Mocha features like `beforeEach`, `afterEach`, and `describe` blocks.
+```bash
+# Run all LLMService tests (recommended) - ONNX warnings filtered by default
+npm run test:llm:all
 
-```javascript
-import { expect } from "chai"; // or use Node.js assert
-import { YourModule } from "./your-module.js";
+# Run specific test suites - ONNX warnings filtered by default
+npm run test:llm              # Basic functionality tests
+npm run test:llm:caching      # Caching behavior tests
+npm run test:llm:integration  # Integration tests
 
-describe("YourModule", () => {
-  beforeEach(() => {
-    // Setup code to run before each test
-    // e.g., mock browser globals like window or localStorage
-  });
+# Test with real vs mock LLMs - ONNX warnings filtered by default
+npm run test:llm:real         # Use real transformers.js models
+npm run test:llm:mock         # Use mock LLM functions
 
-  afterEach(() => {
-    // Teardown code to run after each test
-    // e.g., restore original globals
-  });
+# Show all output including ONNX warnings (for debugging)
+npm run test:llm:verbose      # Unfiltered output
 
-  it("should return sum of two numbers", () => {
-    const result = YourModule.someFunction(5, 10);
-    expect(result).to.equal(15);
-  });
-
-  it("should handle edge cases", () => {
-    const result = YourModule.someFunction(0, 0);
-    expect(result).to.equal(0);
-  });
-});
+# Test ToxicTextFilter - ONNX warnings filtered by default
+npm run test:text-filter      # Text filter tests (mock LLM)
+npm run test:text-filter:verbose # (ONNX warnings Unfiltered) text filter tests
+npm run demo:text-filter      # Run text filter demo
 ```
 
-### Test Configuration
+**Note:** All LLMService test scripts automatically filter out ONNX Runtime warnings for cleaner output. Use `test:llm:verbose` if you need to see the full output including warnings for debugging purposes.
 
-The project uses `.mocharc.json` for Mocha configuration:
+**ToxicTextFilter Testing:** The text filter tests use mock LLMs by default for fast, reliable testing. To test with real LLMs, set the `TEST_REAL_LLM=true` environment variable before running tests. Real LLM tests are more lenient and account for model behavior variations.
 
-- **ES Modules**: Configured with `"require": "esm"` for ES6 import support
-- **File Extensions**: Tests use `.js` extension
-- **Test Specs**: Automatically finds test files in all subdirectories
-- **Timeout**: Set to 10 seconds for longer-running tests
+### Creating New Tests
+
+arslib uses a custom, zero-dependency test runner with a modern expect API.
+It also supports `beforeEach` and `afterEach` for setting up and tearing down test contexts.
+
+```javascript
+import { TestRunner, expect } from "../test/test-runner.js";
+import { YourModule } from "./your-module.js";
+
+const runner = new TestRunner();
+
+runner.beforeEach(() => {
+  // Setup code to run before each test
+  // e.g., mock browser globals like window or localStorage
+});
+
+runner.afterEach(() => {
+  // Teardown code to run after each test
+  // e.g., restore original globals
+});
+
+runner.test("Your test description", () => {
+  const result = YourModule.someFunction(5, 10);
+  expect.toBe(result, 15, "Function should return sum of two numbers");
+});
+
+// Run all tests
+runner.run();
+```
 
 ### Available Assertions
 
-arslib uses **Sinon** for assertions and mocking. Sinon provides a comprehensive testing toolkit with built-in assertion methods:
+All assertion methods accept an optional descriptive message as the last parameter:
 
-```javascript
-import { expect } from "sinon";
-
-// Basic assertions
-expect(result).to.equal(expectedValue);
-expect(array).to.have.length(3);
-expect(object).to.have.property('key');
-expect(function).to.throw(Error);
-
-// Mocking and stubbing
-const stub = sinon.stub(object, 'method');
-const spy = sinon.spy(object, 'method');
-const mock = sinon.mock(object);
-```
-
-**Alternative Options:**
-
-- **Node.js assert**: Built-in assertion module (no additional dependencies)
-- **Custom assertions**: You can also write your own assertion functions
-
-**Note:** Sinon is already included as a dev dependency and provides both assertion methods and powerful mocking capabilities.
+- `expect.toBe(actual, expected, message?)` - Strict equality (===)
+- `expect.toEqual(actual, expected, message?)` - Loose equality (==)
+- `expect.toBeTruthy(value, message?)` - Truthy check
+- `expect.toBeFalsy(value, message?)` - Falsy check
+- `expect.toBeNull(value, message?)` - Null check
+- `expect.toBeUndefined(value, message?)` - Undefined check
+- `expect.toBeDefined(value, message?)` - Defined check
+- `expect.toThrow(fn, expectedMessage?, message?)` - Function should throw
+- `expect.toDoesNotThrow(fn, message?)` - Function should not throw
+- `expect.toBeType(value, type, message?)` - Type checking
+- `expect.toHaveLength(array, length, message?)` - Array length check
+- `expect.toHaveProperty(object, property, message?)` - Object property check
 
 ## 📖 Documentation
 
 ### Key Features
 
+- **Zero Dependencies** - Pure JavaScript with no external dependencies
 - **Cross-Platform** - Works in both browser and Node.js environments
 - **Comprehensive Testing** - All modules include thorough test coverage
 - **TypeScript-Friendly** - Well-documented functions with clear parameter types
@@ -235,41 +319,17 @@ arslib/
 ├── node/               # Node.js specific utilities
 ├── time/               # Time and date utilities
 ├── util/               # Core utility functions
-├── llm/                # LLM integration and AI services
-├── text-filter/        # Content moderation utilities
-├── test/               # Test files (using Mocha)
-├── .mocharc.json       # Mocha configuration
-├── package.json        # Dependencies and scripts
+├── test/               # Test runner and test files
 └── index.js           # Main entry point
 ```
-
-### Dependencies
-
-**Production Dependencies:**
-
-- `@xenova/transformers` - For local AI model inference and text processing
-
-**Development Dependencies:**
-
-- `mocha` - Test framework
-- `sinon` - Mocking and stubbing utilities
-- `esm` - ES modules support for Node.js
 
 ### Contributing
 
 1. Fork the repository
 2. Create a feature branch
-3. Add tests for new functionality using Mocha
+3. Add tests for new functionality
 4. Ensure all tests pass with `npm test`
-5. For LLM-related features, test both mock and real modes
-6. Submit a pull request
-
-**Testing Guidelines:**
-
-- Use Mocha's `describe` and `it` blocks for test organization
-- Include both positive and negative test cases
-- Mock external dependencies using Sinon when appropriate
-- For LLM features, provide both mock and real LLM test options
+5. Submit a pull request
 
 ---
 

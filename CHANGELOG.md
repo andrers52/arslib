@@ -5,9 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.2] - 2025-12-18
+
+- Removed LLM Support and mocha test framework.
+
 ## [0.9.1] - 2025-08-12
 
 ### Changed
+
 - **Documentation Update**: Updated README.md to accurately reflect current testing framework setup
   - Corrected outdated references to custom test runner
   - Updated test examples to use current Mocha framework syntax
@@ -15,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated project structure and dependencies information
 
 ### Improved
+
 - **Documentation Accuracy**: README.md now correctly documents the existing Mocha + Sinon testing setup
 - **Developer Experience**: Clear and accurate information about current testing capabilities
 - **Project Clarity**: Better understanding of actual dependencies and testing framework in use
@@ -22,19 +28,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.9.0] - 2025-08-11
 
 ### Added
+
 - FIFO: `toArrayOrdered()` method to obtain a non-mutating, chronological snapshot (oldest → newest) of the buffer contents.
 
 ### Tests
+
 - Added tests for `toArrayOrdered()` covering empty, normal order, overflow behavior, and non-mutation.
 
 ## [0.8.2] - 2025-08-04
 
 ### Improved
+
 - **FIFO Performance Optimization**: Significantly improved the FIFO data structure implementation with O(1) operations.
 
 ## [0.8.1] - 2025-07-11
 
 ### Improved
+
 - **ToxicTextFilter Robustness**: Enhanced the ToxicTextFilter utility with improved real LLM compatibility and better error handling:
   - Better prompt engineering for clearer LLM instructions
   - Enhanced fallback logic for handling empty or unexpected LLM responses
@@ -44,6 +54,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Support for both default and strict filtering modes with proper prompt handling
 
 ### Fixed
+
 - **ToxicTextFilter Tests**: Fixed test failures and improved reliability:
   - Mock LLM now properly handles all prompt formats (default, strict, detection, scoring)
   - Real LLM tests are more lenient and realistic about model behavior
@@ -54,6 +65,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.8.0] - 2025-07-11
 
 ### Added
+
 - **LLMService Migration**: Migrated the LLMService implementation and all related tests (caching, integration, error handling) from brainiac-engine to arslib/llm/.
 - **Comprehensive LLMService Tests**: Added `llm-service.caching.test.js` and `llm-service.integration.test.js` for full coverage of LLMService features, including memory and persistent caching, real and mock LLMs, and error handling.
 - **ToxicTextFilter**: New utility for detecting and filtering toxic content in text using LLM services. Features include:
@@ -74,28 +86,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `npm run demo:text-filter` (text filter demo)
 
 ### Changed
+
 - **README & Documentation**: Updated documentation to reflect LLMService and ToxicTextFilter availability, usage, and new test scripts.
 - **package.json**: Bumped version to 0.9.0 and added new test scripts for LLMService and TextFilter.
 
 ### Improved
+
 - **Test Coverage**: arslib now provides full test coverage for LLMService and ToxicTextFilter, including caching, integration, and error handling, with easy script access for CI/CD and local development.
 
 ## [0.7.0] - 2025-07-10
 
 ### Added
+
 - **NodeFileStore**: New Node.js-compatible persistent file storage module (`node/node-file-store.js`) using the filesystem for caching and retrieval, with API compatible with the browser version.
 - **Comprehensive Tests**: Added `node/node-file-store.test.js` for full coverage of NodeFileStore, including edge cases and error handling.
 
 ### Changed
+
 - **BrowserFileStore Refactor**: Renamed `browser/file-store.js` to `browser/browser-file-store.js` for clarity and consistency. Updated all imports and documentation accordingly.
 - **Exports**: Both `NodeFileStore` and `BrowserFileStore` are now exported from the main entry point (`index.js`).
 
 ### Fixed
+
 - **Cross-Platform Caching**: Persistent caching now works in both Node.js and browser environments, with automatic selection of the appropriate FileStore implementation.
 
 ### Removed
-- **browser/file-store.test.js**: Removed obsolete test file for the old browser file store implementation.
 
+- **browser/file-store.test.js**: Removed obsolete test file for the old browser file store implementation.
 
 ## [0.6.2] - 2025-07-09
 
