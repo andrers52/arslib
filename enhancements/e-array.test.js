@@ -1,25 +1,26 @@
-import { strict as assert } from "assert";
+import { TestRunner, expect } from "../test/test-runner.js";
 import { EArray } from "./e-array.js";
 
-describe("EArray.range generates correct sequence", function() {
-  it("should work", function() {
-    let range = EArray.range(1, 5);
-    let expectedValues = [1, 2, 3, 4];
+const runner = new TestRunner();
 
-    for (let expectedValue of expectedValues) {
-      let actualValue = range.next().value;
-      assert.strictEqual(
-        actualValue,
-        expectedValue,
-        `Range should generate value ${expectedValue} in sequence`
-      );
-    }
+runner.test("EArray.range generates correct sequence", () => {
+  let range = EArray.range(1, 5);
+  let expectedValues = [1, 2, 3, 4];
 
-    // After all values, the iterator should be done
-    const result = range.next();
-    assert.ok(
-      result.done,
-      "Range should be exhausted after generating all values"
+  for (let expectedValue of expectedValues) {
+    let actualValue = range.next().value;
+    expect.toBe(
+      actualValue,
+      expectedValue,
+      `Range should generate value ${expectedValue} in sequence`,
     );
-  });
+  }
+
+  expect.toBeTruthy(
+    range.next().done,
+    "Range should be exhausted after generating all values",
+  );
 });
+
+// Run all tests
+runner.run();

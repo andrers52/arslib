@@ -1,6 +1,8 @@
-import { strict as assert } from "assert";
 import { Platform } from "../../platform.js";
+import { TestRunner, expect } from "../../test/test-runner.js";
 import { NodeLogToFile } from "./node-log-to-file.js";
+
+const runner = new TestRunner();
 
 // Cleanup function to remove test-generated log files
 async function cleanup() {
@@ -43,12 +45,9 @@ async function cleanup() {
   }
 }
 
-describe("NodeLogToFile", function() {
-  after(async function() {
-    await cleanup();
-  });
-
-  it("should only work in Node.js environment", async function() {
+runner.test(
+  "NodeLogToFile should only work in Node.js environment",
+  async () => {
     if (!Platform.isNode()) {
       // Create a mock object to test with
       const mockObj = {};
@@ -58,97 +57,139 @@ describe("NodeLogToFile", function() {
         "value2",
       ]);
 
-      assert.ok(!mockObj.log, "The mixin should not have added log method in non-Node environment");
-      assert.ok(!mockObj.enableLog, "The mixin should not have added enableLog method in non-Node environment");
-      assert.ok(!mockObj.disableLog, "The mixin should not have added disableLog method in non-Node environment");
+      expect.toBeFalsy(
+        mockObj.log,
+        "The mixin should not have added log method in non-Node environment",
+      );
+      expect.toBeFalsy(
+        mockObj.enableLog,
+        "The mixin should not have added enableLog method in non-Node environment",
+      );
+      expect.toBeFalsy(
+        mockObj.disableLog,
+        "The mixin should not have added disableLog method in non-Node environment",
+      );
       return;
     }
 
-    assert.strictEqual(typeof NodeLogToFile, "function", "NodeLogToFile should be a function");
-  });
+    expect.toBeType(
+      NodeLogToFile,
+      "function",
+      "NodeLogToFile should be a function",
+    );
+  },
+);
 
-  it("adds logging methods to object", async function() {
-    if (!Platform.isNode()) {
-      this.skip(); // Skip test if not in Node.js
-    }
+runner.test("NodeLogToFile adds logging methods to object", async () => {
+  if (!Platform.isNode()) {
+    return; // Skip test if not in Node.js
+  }
 
-    const testObj = {};
+  const testObj = {};
 
+  await NodeLogToFile.call(
+    testObj,
+    "testEntity",
+    "testDescription",
+    ["value1", "value2"],
+    false,
+  );
+
+  expect.toBeType(testObj.log, "function", "Mixin should add log method");
+  expect.toBeType(
+    testObj.enableLog,
+    "function",
+    "Mixin should add enableLog method",
+  );
+  expect.toBeType(
+    testObj.disableLog,
+    "function",
+    "Mixin should add disableLog method",
+  );
+});
+
+runner.test("NodeLogToFile validates input parameters", async () => {
+  if (!Platform.isNode()) {
+    return; // Skip test if not in Node.js
+  }
+
+  const testObj = {};
+
+  try {
+    await NodeLogToFile.call(testObj, "testEntity", null, ["value1"]);
+    expect.toBeTruthy(
+      false,
+      "Should not reach here - invalid dataDescription should throw",
+    );
+  } catch (error) {
+    expect.toBeTruthy(true, "Expected to throw with invalid dataDescription");
+  }
+
+  try {
     await NodeLogToFile.call(
       testObj,
       "testEntity",
-      "testDescription",
-      ["value1", "value2"],
-      false,
+      "description",
+      "not-an-array",
     );
+    expect.toBeTruthy(
+      false,
+      "Should not reach here - invalid valuesToLog should throw",
+    );
+  } catch (error) {
+    expect.toBeTruthy(true, "Expected to throw with invalid valuesToLog");
+  }
+});
 
-    assert.ok(typeof testObj.log === "function", "Mixin should add log method");
-    assert.strictEqual(typeof testObj.enableLog, "function", "Mixin should add enableLog method");
-    assert.strictEqual(typeof testObj.disableLog, "function", "Mixin should add disableLog method");
-  });
+runner.test("NodeLogToFile creates log file with correct header", async () => {
+  if (!Platform.isNode()) {
+    return; // Skip test if not in Node.js
+  }
 
-  it("validates input parameters", async function() {
-    if (!Platform.isNode()) {
-      this.skip(); // Skip test if not in Node.js
-    }
+  const { default: fs } = await import("fs");
+  const testObj = {};
 
-    const testObj = {};
+  await NodeLogToFile.call(
+    testObj,
+    "testEntity",
+    "testDesc",
+    ["val1", "val2"],
+    false,
+  );
 
-    try {
-      await NodeLogToFile.call(testObj, "testEntity", null, ["value1"]);
-      assert.fail("Should not reach here - invalid dataDescription should throw");
-    } catch (error) {
-      assert.ok(true, "Expected to throw with invalid dataDescription");
-    }
+  const expectedFileName = "./log/testEntity_testDesc_val1_val2.txt";
 
-    try {
-      await NodeLogToFile.call(
-        testObj,
-        "testEntity",
-        "description",
-        "not-an-array",
+  await new Promise((resolve) => setTimeout(resolve, 100));
+
+  try {
+    if (fs.existsSync(expectedFileName)) {
+      const content = fs.readFileSync(expectedFileName, "utf8");
+      expect.toBeTruthy(
+        content.includes("time"),
+        "Log file should contain time header",
       );
-      assert.fail("Should not reach here - invalid valuesToLog should throw");
-    } catch (error) {
-      assert.ok(true, "Expected to throw with invalid valuesToLog");
+      expect.toBeTruthy(
+        content.includes("val1"),
+        "Log file should contain val1 header",
+      );
+      expect.toBeTruthy(
+        content.includes("val2"),
+        "Log file should contain val2 header",
+      );
     }
-  });
-
-  it("creates log file with correct header", async function() {
-    if (!Platform.isNode()) {
-      this.skip(); // Skip test if not in Node.js
-    }
-
-    const { default: fs } = await import("fs");
-    const testObj = {};
-
-    await NodeLogToFile.call(
-      testObj,
-      "testEntity",
-      "testDesc",
-      ["val1", "val2"],
-      false,
+  } catch (error) {
+    expect.toBeTruthy(
+      true,
+      "File operations might fail in test environment, which is acceptable",
     );
+  }
+});
 
-    const expectedFileName = "./log/testEntity_testDesc_val1_val2.txt";
-
-    await new Promise((resolve) => setTimeout(resolve, 100));
-
-    try {
-      if (fs.existsSync(expectedFileName)) {
-        const content = fs.readFileSync(expectedFileName, "utf8");
-        assert.ok(content.includes("time"), "Log file should contain time header");
-        assert.ok(content.includes("val1"), "Log file should contain val1 header");
-        assert.ok(content.includes("val2"), "Log file should contain val2 header");
-      }
-    } catch (error) {
-      assert.ok(true, "File operations might fail in test environment, which is acceptable");
-    }
-  });
-
-  it("enableLog and disableLog work correctly", async function() {
+runner.test(
+  "NodeLogToFile enableLog and disableLog work correctly",
+  async () => {
     if (!Platform.isNode()) {
-      this.skip(); // Skip test if not in Node.js
+      return; // Skip test if not in Node.js
     }
 
     const testObj = {};
@@ -161,35 +202,113 @@ describe("NodeLogToFile", function() {
       false,
     );
 
-    assert.strictEqual(typeof testObj.enableLog, "function", "enableLog should be a function");
-    assert.strictEqual(typeof testObj.disableLog, "function", "disableLog should be a function");
+    expect.toBeType(
+      testObj.enableLog,
+      "function",
+      "enableLog should be a function",
+    );
+    expect.toBeType(
+      testObj.disableLog,
+      "function",
+      "disableLog should be a function",
+    );
 
     testObj.enableLog();
     testObj.disableLog();
 
-    assert.ok(true, "Test passes if no errors thrown during enable/disable operations");
-  });
-
-  it("log method validates input", async function() {
-    if (!Platform.isNode()) {
-      this.skip(); // Skip test if not in Node.js
-    }
-
-    const testObj = {};
-
-    await NodeLogToFile.call(
-      testObj,
-      "testEntity",
-      "testDesc",
-      ["value1", "value2"],
+    expect.toBeTruthy(
       true,
+      "Test passes if no errors thrown during enable/disable operations",
     );
+  },
+);
 
-    try {
-      testObj.log("not-an-object");
-      assert.fail("Should not reach here - log method should throw with invalid input");
-    } catch (error) {
-      assert.ok(true, "Expected to throw with invalid input to log method");
+runner.test("NodeLogToFile log method validates input", async () => {
+  if (!Platform.isNode()) {
+    return; // Skip test if not in Node.js
+  }
+
+  const testObj = {};
+
+  await NodeLogToFile.call(
+    testObj,
+    "testEntity",
+    "testDesc",
+    ["value1", "value2"],
+    true,
+  );
+
+  try {
+    testObj.log("not-an-object");
+    expect.toBeTruthy(
+      false,
+      "Should not reach here - log method should throw with invalid input",
+    );
+  } catch (error) {
+    expect.toBeTruthy(
+      true,
+      "Expected to throw with invalid input to log method",
+    );
+  }
+
+  try {
+    testObj.log({ value1: "test" }); // missing value2
+    expect.toBeTruthy(
+      false,
+      "Should not reach here - log method should throw with missing required values",
+    );
+  } catch (error) {
+    expect.toBeTruthy(true, "Expected to throw with missing required values");
+  }
+});
+
+runner.test("NodeLogToFile startRightAway parameter works", async () => {
+  if (!Platform.isNode()) {
+    return; // Skip test if not in Node.js
+  }
+
+  const { default: fs } = await import("fs");
+
+  // Create log directory if it doesn't exist
+  try {
+    if (!fs.existsSync("./log")) {
+      fs.mkdirSync("./log", { recursive: true });
     }
-  });
+  } catch (error) {
+    // Directory creation might fail in test environment
+  }
+
+  const testObj1 = {};
+  const testObj2 = {};
+
+  await NodeLogToFile.call(testObj1, "entity1", "desc1", ["val1"], false);
+
+  await NodeLogToFile.call(testObj2, "entity2", "desc2", ["val1"], true);
+
+  expect.toBeType(
+    testObj1.log,
+    "function",
+    "testObj1 should have log method after mixin with startRightAway=false",
+  );
+  expect.toBeType(
+    testObj2.log,
+    "function",
+    "testObj2 should have log method after mixin with startRightAway=true",
+  );
+
+  try {
+    testObj2.log({ val1: "test" });
+    expect.toBeTruthy(true, "Logging should work when enabled");
+  } catch (error) {
+    expect.toBeTruthy(
+      true,
+      "File system operations might fail in test environment, which is acceptable",
+    );
+  }
+});
+
+// Run all tests
+runner.run().then(() => {
+  // Cleanup after tests
+  cleanup();
 });

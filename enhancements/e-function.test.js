@@ -1,60 +1,60 @@
-import { strict as assert } from "assert";
+import { TestRunner, expect } from "../test/test-runner.js";
 import { EFunction } from "./e-function.js";
 
-describe("EFunction.memoize", function() {
-  it("caches function results correctly", function() {
-    const square = (n) => n * n;
-    const memoizedSquare = EFunction.memoize(square, 10);
+const runner = new TestRunner();
 
-    const result1 = memoizedSquare(2);
-    const result2 = memoizedSquare(2);
+runner.test("EFunction.memoize caches function results correctly", () => {
+  const square = (n) => n * n;
+  const memoizedSquare = EFunction.memoize(square, 10);
 
-    assert.strictEqual(result1, 4, "First call should return correct result");
-    assert.strictEqual(result2, 4, "Second call should return same cached result");
+  const result1 = memoizedSquare(2);
+  const result2 = memoizedSquare(2);
 
-    let callCount = 0;
-    const squareWithCount = (n) => {
-      callCount++;
-      return n * n;
-    };
-    const memoizedSquareWithCount = EFunction.memoize(squareWithCount, 10);
+  expect.toBe(result1, 4, "First call should return correct result");
+  expect.toBe(result2, 4, "Second call should return same cached result");
 
-    memoizedSquareWithCount(3);
-    memoizedSquareWithCount(3);
-    assert.strictEqual(
-      callCount,
-      1,
-      "Function should only be called once for cached input"
-    );
-  });
+  let callCount = 0;
+  const squareWithCount = (n) => {
+    callCount++;
+    return n * n;
+  };
+  const memoizedSquareWithCount = EFunction.memoize(squareWithCount, 10);
 
-  it("handles cache eviction correctly", function() {
-    let callCount = 0;
-    const squareWithCount = (n) => {
-      callCount++;
-      return n * n;
-    };
-    const memoizedSquareWithEviction = EFunction.memoize(squareWithCount, 10);
-
-    for (let i = 0; i < 11; i++) {
-      memoizedSquareWithEviction(i);
-    }
-    assert.strictEqual(
-      callCount,
-      11,
-      "All 11 unique calls should execute when cache size is 10"
-    );
-
-    assert.doesNotThrow(
-      () => memoizedSquareWithEviction(12),
-      undefined,
-      "Cache eviction should not throw errors"
-    );
-  });
+  memoizedSquareWithCount(3);
+  memoizedSquareWithCount(3);
+  expect.toBe(
+    callCount,
+    1,
+    "Function should only be called once for cached input",
+  );
 });
 
-describe("EFunction.limitCallingRateWithDiscard", function() {
-  it("limits function calls", function(done) {
+runner.test("EFunction.memoize handles cache eviction correctly", () => {
+  let callCount = 0;
+  const squareWithCount = (n) => {
+    callCount++;
+    return n * n;
+  };
+  const memoizedSquareWithEviction = EFunction.memoize(squareWithCount, 10);
+
+  for (let i = 0; i < 11; i++) {
+    memoizedSquareWithEviction(i);
+  }
+  expect.toBe(
+    callCount,
+    11,
+    "All 11 unique calls should execute when cache size is 10",
+  );
+
+  expect.toDoesNotThrow(
+    () => memoizedSquareWithEviction(12),
+    "Cache eviction should not throw errors",
+  );
+});
+
+runner.test(
+  "EFunction.limitCallingRateWithDiscard limits function calls",
+  (done) => {
     let callCount = 0;
     const testFunction = () => {
       callCount++;
@@ -63,42 +63,43 @@ describe("EFunction.limitCallingRateWithDiscard", function() {
 
     const limitedFunction = EFunction.limitCallingRateWithDiscard(
       testFunction,
-      100
+      100,
     );
 
     limitedFunction();
-    assert.strictEqual(callCount, 1, "Function should be called initially");
+    expect.toBe(callCount, 1, "Function should be called initially");
 
     limitedFunction(); // discarded
-    assert.strictEqual(
+    expect.toBe(
       callCount,
       1,
-      "Function should not be called again immediately"
+      "Function should not be called again immediately",
     );
 
     setTimeout(() => {
       limitedFunction();
-      assert.strictEqual(
+      expect.toBe(
         callCount,
         2,
-        "Function should be called again after the delay"
+        "Function should be called again after the delay",
       );
 
       limitedFunction(); // discarded
       limitedFunction(); // discarded
-      assert.strictEqual(
+      expect.toBe(
         callCount,
         2,
-        "Function should be called only once per delay period"
+        "Function should be called only once per delay period",
       );
 
-      done();
+      if (done) done(); // For async test completion
     }, 150);
-  });
-});
+  },
+);
 
-describe("EFunction.addRuntimeTypeTest", function() {
-  it("validates function arguments and return types", function() {
+runner.test(
+  "EFunction.addRuntimeTypeTest validates function arguments and return types",
+  () => {
     // Define a simple sum function
     function sum(a, b) {
       return a + b;
@@ -108,48 +109,55 @@ describe("EFunction.addRuntimeTypeTest", function() {
     const sumWithTypeTest = EFunction.addRuntimeTypeTest(
       sum,
       ["number", "number"],
-      "number"
+      "number",
     );
 
     const result = sumWithTypeTest(1, 2);
-    assert.strictEqual(
+    expect.toBe(
       result,
       3,
-      "Function should work correctly with valid arguments"
+      "Function should work correctly with valid arguments",
     );
 
-    assert.throws(
-      () => sumWithTypeTest("asdf", "wer"),
-      /function argument asdf expected to be of type number/,
-      "Function should throw with invalid argument types"
+    expect.toThrow(
+      () => {
+        sumWithTypeTest("asdf", "wer");
+      },
+      "function argument asdf expected to be of type number",
+      "Function should throw with invalid argument types",
     );
-  });
+  },
+);
 
-  it("handles array and void return types", function() {
+runner.test(
+  "EFunction.addRuntimeTypeTest handles array and void return types",
+  () => {
     function returnArray() {
       return [1, 2, 3];
     }
     const returnArrayWithTypeTest = EFunction.addRuntimeTypeTest(
       returnArray,
       [],
-      "array"
+      "array",
     );
 
     const result = returnArrayWithTypeTest();
-    assert.ok(Array.isArray(result), "Function should return an array");
+    expect.toBeType(result, "array", "Function should return an array");
 
     function returnVoid() {}
     const returnVoidWithTypeTest = EFunction.addRuntimeTypeTest(
       returnVoid,
       [],
-      "void"
+      "void",
     );
 
     const voidResult = returnVoidWithTypeTest();
-    assert.strictEqual(
+    expect.toBeUndefined(
       voidResult,
-      undefined,
-      "Function should return undefined for void type"
+      "Function should return undefined for void type",
     );
-  });
-});
+  },
+);
+
+// Run all tests
+runner.run();
