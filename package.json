@@ -7,7 +7,7 @@
         "url": "git+https://github.com/andrers52/arslib.git"
     },
     "scripts": {
-        "test": "for file in $(find . -name '*.test.js'); do echo Running $file && node $file && echo $file: PASS || exit 1; done && echo 'All tests passed!'"
+        "test": "node test/run-all.js"
     },
     "author": "Andre Rodrigues da Silva",
     "main": "./index.js",
