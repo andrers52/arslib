@@ -1,0 +1,12 @@
+2025-12-19 01:31:14 1766118674217 ✅ TimeConstrainedAction.runUntilConditionReady works with delayed condition 
+2025-12-19 01:31:14 1766118674321 ✅ TimeConstrainedAction.runUntilConditionReady times out correctly 
+2025-12-19 01:31:14 1766118674373 ✅ TimeConstrainedAction.runUntilConditionReady with startWaiting=true 
+2025-12-19 01:31:14 1766118674424 ✅ TimeConstrainedAction.callWithDelay with no arguments 
+2025-12-19 01:31:14 1766118674425 
+📊 Test Results: 
+2025-12-19 01:31:14 1766118674425    Total: 7 
+2025-12-19 01:31:14 1766118674425    Passed: 7 ✅ 
+2025-12-19 01:31:14 1766118674425    Failed: 0  
+2025-12-19 01:31:14 1766118674425    Duration: 514ms 
+2025-12-19 01:31:14 1766118674425 
+🎉 All tests passed! 
