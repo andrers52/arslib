@@ -24,7 +24,7 @@ runner.test("Cookie should export an empty object in Node.js", () => {
 runner.test(
   "Cookie should have setCookie and getCookie methods in the browser",
   () => {
-    if (!Platform.isNode()) {
+    if (Platform.isBrowser()) {
       expect.toBe(typeof Cookie.setCookie, "function");
       expect.toBe(typeof Cookie.getCookie, "function");
     } else {
@@ -36,7 +36,7 @@ runner.test(
 runner.test(
   "setCookie and getCookie should work as expected in a browser-like environment",
   () => {
-    if (!Platform.isNode()) {
+    if (Platform.isBrowser()) {
       // Mock document.cookie for browser-like environment testing
       let mockCookieStore = {};
       const originalDocument = global.document;

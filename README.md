@@ -24,6 +24,30 @@ console.log(Util.limitValueToMinMax(10, 5, 15)); // 10
 console.log(Util.floatSanitize(0.1 + 0.2)); // 0.3
 ```
 
+### Browser Entry
+
+Bundlers that support conditional exports will use the browser-safe entry automatically:
+
+```javascript
+import { Util } from "arslib";
+```
+
+This entry avoids loading window-only utilities in WebWorkers.
+
+### Subpath Exports
+
+Use module-level exports to load only what you need:
+
+```javascript
+import { Assert } from "arslib/assert";
+import { EFunction } from "arslib/enhancements";
+import { Time } from "arslib/time";
+import { ImageUtil } from "arslib/browser";
+```
+
+Subpath exports are available for `enhancements`, `data-structures`, `mixins`,
+`comm`, `time`, `browser`, and `node`.
+
 ## 📦 Available Modules
 
 To see all available exports, check `index.js` in the package root folder.

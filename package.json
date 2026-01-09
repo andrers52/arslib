@@ -11,6 +11,29 @@
     },
     "author": "Andre Rodrigues da Silva",
     "main": "./index.js",
+    "exports": {
+        ".": {
+            "browser": "./browser/index.js",
+            "default": "./index.js"
+        },
+        "./assert": "./assert.js",
+        "./platform": "./platform.js",
+        "./random": "./random.js",
+        "./util": "./util.js",
+        "./language-construct": "./language-construct.js",
+        "./localization": "./localization.js",
+        "./enhancements": "./enhancements/index.js",
+        "./data-structures": "./data-structures/index.js",
+        "./mixins": "./mixins/index.js",
+        "./comm": "./comm/index.js",
+        "./time": "./time/index.js",
+        "./browser": "./browser/index.js",
+        "./node": "./node/index.js",
+        "./node/mixins": "./node/mixins/index.js",
+        "./browser/*": "./browser/*",
+        "./node/*": "./node/*",
+        "./*": "./*"
+    },
     "license": "MIT",
     "type": "module"
 }

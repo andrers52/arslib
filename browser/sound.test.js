@@ -30,7 +30,7 @@ runner.test(
 //
 // let mockAudio;
 // runner.beforeEach(() => {
-//   if (!Platform.isNode()) {
+//   if (Platform.isBrowser()) {
 //     mockAudio = {
 //       play: () => {}, // Use a spy from a library like Sinon.js if more detailed assertion is needed
 //       pause: () => {},
@@ -44,7 +44,7 @@ runner.test(
 // });
 //
 // runner.test("playSound should call audio.play() in browser", () => {
-//   if (!Platform.isNode()) {
+//   if (Platform.isBrowser()) {
 //     let playCalled = false;
 //     mockAudio.play = () => { playCalled = true; };
 //     Sound.playSound(mockAudio);
@@ -55,7 +55,7 @@ runner.test(
 // });
 //
 // runner.test("playSoundLoop should set up an event listener for 'ended' in browser", () => {
-//   if (!Platform.isNode()) {
+//   if (Platform.isBrowser()) {
 //     let eventListenerAdded = false;
 //     mockAudio.addEventListener = (event, callback) => {
 //       if (event === 'ended') {
@@ -70,7 +70,7 @@ runner.test(
 // });
 //
 // runner.test("clearAllEvents should call audio.pause() and reset currentTime in browser", () => {
-//   if (!Platform.isNode()) {
+//   if (Platform.isBrowser()) {
 //     let pauseCalled = false;
 //     mockAudio.pause = () => { pauseCalled = true; };
 //     Sound.clearAllEvents(mockAudio);

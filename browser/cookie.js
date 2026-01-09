@@ -7,7 +7,7 @@ import { Platform } from "../platform.js";
  */
 let Cookie = {};
 
-if (!Platform.isNode()) {
+if (Platform.isBrowser()) {
   /**
    * Sets a cookie with specified name, value, and expiration
    * @param {string} name - Cookie name

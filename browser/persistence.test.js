@@ -21,7 +21,7 @@ runner.test("Persistence should export an empty object in Node.js", () => {
 });
 
 runner.test("Persistence should have getInstance method in the browser", () => {
-  if (!Platform.isNode()) {
+  if (Platform.isBrowser()) {
     expect.toBe(typeof Persistence.getInstance, "function");
   } else {
     expect.toBe(true, true); // Test considered passing in Node.js
@@ -34,7 +34,7 @@ let originalLocalStorage;
 let originalWindow;
 
 runner.beforeEach(() => {
-  if (!Platform.isNode()) {
+  if (Platform.isBrowser()) {
     mockLocalStorageStore = {};
     // Ensure window object exists in the test environment for browser tests
     if (typeof global.window === "undefined") {
@@ -64,7 +64,7 @@ runner.beforeEach(() => {
 });
 
 runner.afterEach(() => {
-  if (!Platform.isNode()) {
+  if (Platform.isBrowser()) {
     if (originalLocalStorage === undefined) {
       delete global.window.localStorage;
     } else {
@@ -84,7 +84,7 @@ runner.afterEach(() => {
 runner.test(
   "getInstance should return a persistence object with defined entities in browser",
   () => {
-    if (!Platform.isNode()) {
+    if (Platform.isBrowser()) {
       const p = Persistence.getInstance(
         "testNS_entities",
         "entity1",
@@ -116,7 +116,7 @@ runner.test(
 runner.test(
   "should store and retrieve values correctly in browser",
   async () => {
-    if (!Platform.isNode()) {
+    if (Platform.isBrowser()) {
       const p = Persistence.getInstance("testNS_storeRetrieve", "myEntity");
       const testValue = { data: "test data", count: 123 };
       p.myEntity = testValue;
@@ -148,7 +148,7 @@ runner.test(
 runner.test(
   "should retrieve previously stored values when a new instance is created for the same namespace in browser",
   () => {
-    if (!Platform.isNode()) {
+    if (Platform.isBrowser()) {
       const namespace = "testNS_retrieveExisting";
       const entityName = "persistentEntity";
       const initialValue = { message: "hello from past" };
@@ -172,7 +172,7 @@ runner.test(
 runner.test(
   "getInstance should return the same instance for the same namespace in browser",
   () => {
-    if (!Platform.isNode()) {
+    if (Platform.isBrowser()) {
       const p1 = Persistence.getInstance("singletonNS_test", "e1");
       const p2 = Persistence.getInstance("singletonNS_test", "e1");
       expect.toBe(
@@ -201,7 +201,7 @@ runner.test(
 );
 
 runner.test("values should be isolated by namespace in browser", async () => {
-  if (!Platform.isNode()) {
+  if (Platform.isBrowser()) {
     const p_app1 = Persistence.getInstance("app1_isolation", "config");
     const p_app2 = Persistence.getInstance("app2_isolation", "config");
 

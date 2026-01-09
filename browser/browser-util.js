@@ -1,9 +1,12 @@
 "use strict";
-import { Platform } from "../platform.js";
-
 let BrowserUtil = {};
 
-if (!Platform.isNode()) {
+const setupBrowserUtil = () => {
+  const windowRef =
+    typeof globalThis === "undefined" ? undefined : globalThis.window;
+  if (!windowRef || typeof windowRef.document === "undefined") {
+    return;
+  }
   /**
    * Determines the best supported video format for a given video element
    * @param {HTMLVideoElement} video - The video element to test format support
@@ -41,26 +44,26 @@ if (!Platform.isNode()) {
     return returnExtension;
   };
 
-  window.requestAnimationFrame = (function () {
+  windowRef.requestAnimationFrame = (function () {
     return (
-      window.requestAnimationFrame ||
-      window.webkitRequestAnimationFrame ||
-      window.mozRequestAnimationFrame ||
-      window.oRequestAnimationFrame ||
-      window.msRequestAnimationFrame ||
+      windowRef.requestAnimationFrame ||
+      windowRef.webkitRequestAnimationFrame ||
+      windowRef.mozRequestAnimationFrame ||
+      windowRef.oRequestAnimationFrame ||
+      windowRef.msRequestAnimationFrame ||
       function (/* function */ callback, /* DOMElement */ element) {
-        return window.setTimeout(callback, 1000 / 60);
+        return windowRef.setTimeout(callback, 1000 / 60);
       }
     );
   })();
 
-  window.cancelAnimationFrame = (function () {
+  windowRef.cancelAnimationFrame = (function () {
     return (
-      window.cancelAnimationFrame ||
-      window.webkitCancelRequestAnimationFrame ||
-      window.mozCancelRequestAnimationFrame ||
-      window.oCancelRequestAnimationFrame ||
-      window.msCancelRequestAnimationFrame ||
+      windowRef.cancelAnimationFrame ||
+      windowRef.webkitCancelRequestAnimationFrame ||
+      windowRef.mozCancelRequestAnimationFrame ||
+      windowRef.oCancelRequestAnimationFrame ||
+      windowRef.msCancelRequestAnimationFrame ||
       clearTimeout
     );
   })();
@@ -70,7 +73,7 @@ if (!Platform.isNode()) {
    * Does nothing if already in fullscreen mode
    */
   BrowserUtil.fullScreen = function () {
-    let doc = window.document;
+    let doc = windowRef.document;
     let docEl = doc.documentElement;
 
     //don't ask  if already fullscreen
@@ -102,10 +105,11 @@ if (!Platform.isNode()) {
     try {
       orientation = orientation || "landscape";
 
+      const screenRef = windowRef.screen;
       let lockFunc =
-        screen.lockOrientation ||
-        screen.mozLockOrientation ||
-        screen.msLockOrientation;
+        screenRef?.lockOrientation ||
+        screenRef?.mozLockOrientation ||
+        screenRef?.msLockOrientation;
 
       return lockFunc && lockFunc(orientation);
     } catch (err) {
@@ -119,21 +123,23 @@ if (!Platform.isNode()) {
    * @param {string} text - Text content to download
    */
   BrowserUtil.download = (filename, text) => {
-    var pom = document.createElement("a");
+    var pom = windowRef.document.createElement("a");
     pom.setAttribute(
       "href",
       "data:text/plain;charset=utf-8," + encodeURIComponent(text),
     );
     pom.setAttribute("download", filename);
 
-    if (document.createEvent) {
-      var event = document.createEvent("MouseEvents");
+    if (windowRef.document.createEvent) {
+      var event = windowRef.document.createEvent("MouseEvents");
       event.initEvent("click", true, true);
       pom.dispatchEvent(event);
     } else {
       pom.click();
     }
   };
-}
+};
+
+setupBrowserUtil();
 
 export { BrowserUtil };

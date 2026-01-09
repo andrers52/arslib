@@ -5,7 +5,7 @@ import { Util } from "../util.js";
 
 let CanvasUtil = {};
 
-if (!Platform.isNode()) {
+if (Platform.isBrowser()) {
   /**
    * Transform Y to go from bottom to top
    *

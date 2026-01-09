@@ -1,34 +1,40 @@
 "use strict";
 
-import { Platform } from "../platform.js";
-
 /**
  * BrowserFileStore constructor - Creates an IndexedDB-based file storage system
  */
 let BrowserFileStore = {};
 
-if (!Platform.isNode()) {
-  // Browser compatibility setup
-  if (!window.indexedDB) {
-    window.indexedDB =
-      window.webkitIndexedDB ||
-      window.mozIndexedDB ||
-      window.OIndexedDB ||
-      window.msIndexedDB;
+const setupBrowserFileStore = () => {
+  const windowRef =
+    typeof globalThis === "undefined" ? undefined : globalThis.window;
+  if (!windowRef || typeof windowRef.document === "undefined") {
+    return;
   }
-  window.IDBTransaction =
-    window.IDBTransaction ||
-    window.webkitIDBTransaction ||
-    window.OIDBTransaction ||
-    window.msIDBTransaction;
-  window.IDBKeyRange =
-    window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+  // Browser compatibility setup
+  if (!windowRef.indexedDB) {
+    windowRef.indexedDB =
+      windowRef.webkitIndexedDB ||
+      windowRef.mozIndexedDB ||
+      windowRef.OIndexedDB ||
+      windowRef.msIndexedDB;
+  }
+  windowRef.IDBTransaction =
+    windowRef.IDBTransaction ||
+    windowRef.webkitIDBTransaction ||
+    windowRef.OIDBTransaction ||
+    windowRef.msIDBTransaction;
+  windowRef.IDBKeyRange =
+    windowRef.IDBKeyRange ||
+    windowRef.webkitIDBKeyRange ||
+    windowRef.msIDBKeyRange;
 
   // Private variables
   let db = null;
   let dbReady = false;
   let pendingOperations = [];
   const dbVersion = 1;
+  const indexedDbRef = windowRef.indexedDB;
 
   /**
    * Creates an object store in the database (private)
@@ -58,7 +64,7 @@ if (!Platform.isNode()) {
    * Initializes the IndexedDB database (private)
    */
   const initializeDatabase = function () {
-    const request = indexedDB.open("mimiFiles", dbVersion);
+    const request = indexedDbRef.open("mimiFiles", dbVersion);
 
     request.onerror = function (event) {
       console.error("Database error:", event);
@@ -85,7 +91,7 @@ if (!Platform.isNode()) {
    * @returns {boolean} True if IndexedDB is supported, false otherwise
    */
   BrowserFileStore.isAvailable = function () {
-    return !!window.indexedDB;
+    return !!windowRef.indexedDB;
   };
 
   /**
@@ -124,7 +130,11 @@ if (!Platform.isNode()) {
    * @param {Function} successCallback - Callback function called with the retrieved blob on success
    * @param {Function} errorCallback - Callback function called on error
    */
-  BrowserFileStore.getFile = function (identifier, successCallback, errorCallback) {
+  BrowserFileStore.getFile = function (
+    identifier,
+    successCallback,
+    errorCallback,
+  ) {
     const operation = {
       execute: () => {
         const transaction = db.transaction(["mimi"], "readonly");
@@ -143,6 +153,8 @@ if (!Platform.isNode()) {
       pendingOperations.push(operation);
     }
   };
-}
+};
+
+setupBrowserFileStore();
 
 export { BrowserFileStore };

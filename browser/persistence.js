@@ -19,7 +19,7 @@ import { Platform } from "../platform.js";
 
 let Persistence = {};
 
-if (!Platform.isNode()) {
+if (Platform.isBrowser()) {
   const instances = {}; // To store instances per namespace
 
   /**

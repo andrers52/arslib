@@ -2,7 +2,7 @@ import { Platform } from "../platform.js";
 
 var ImageUtil = {};
 
-if (!Platform.isNode()) {
+if (Platform.isBrowser()) {
   /**
    * Creates a canvas element for image manipulation
    * @param {number} width - Canvas width in pixels

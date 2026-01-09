@@ -3,7 +3,7 @@ import { Platform } from "../platform.js";
 
 let Sound = {};
 
-if (!Platform.isNode()) {
+if (Platform.isBrowser()) {
   /**
    * Checks if an audio element is currently playing
    * @param {HTMLAudioElement} audio - Audio element to check
