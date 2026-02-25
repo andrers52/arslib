@@ -1,39 +1,50 @@
 {
     "name": "arslib",
-    "version": "0.9.6",
-    "description": "Andre's JavaScript Utility library",
+    "version": "0.10.0",
+    "description": "Andre's TypeScript Utility library",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/andrers52/arslib.git"
     },
     "scripts": {
-        "test": "node test/run-all.js"
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "build": "tsc"
     },
     "author": "Andre Rodrigues da Silva",
-    "main": "./index.js",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
     "exports": {
         ".": {
-            "browser": "./browser/index.js",
-            "default": "./index.js"
+            "browser": "./dist/browser/index.js",
+            "default": "./dist/index.js"
         },
-        "./assert": "./assert.js",
-        "./platform": "./platform.js",
-        "./random": "./random.js",
-        "./util": "./util.js",
-        "./language-construct": "./language-construct.js",
-        "./localization": "./localization.js",
-        "./enhancements": "./enhancements/index.js",
-        "./data-structures": "./data-structures/index.js",
-        "./mixins": "./mixins/index.js",
-        "./comm": "./comm/index.js",
-        "./time": "./time/index.js",
-        "./browser": "./browser/index.js",
-        "./node": "./node/index.js",
-        "./node/mixins": "./node/mixins/index.js",
-        "./browser/*": "./browser/*",
-        "./node/*": "./node/*",
-        "./*": "./*"
+        "./assert": "./dist/assert.js",
+        "./platform": "./dist/platform.js",
+        "./random": "./dist/random.js",
+        "./util": "./dist/util.js",
+        "./language-construct": "./dist/language-construct.js",
+        "./localization": "./dist/localization.js",
+        "./enhancements": "./dist/enhancements/index.js",
+        "./data-structures": "./dist/data-structures/index.js",
+        "./mixins": "./dist/mixins/index.js",
+        "./comm": "./dist/comm/index.js",
+        "./time": "./dist/time/index.js",
+        "./browser": "./dist/browser/index.js",
+        "./node": "./dist/node/index.js",
+        "./node/mixins": "./dist/node/mixins/index.js",
+        "./browser/*": "./dist/browser/*",
+        "./node/*": "./dist/node/*",
+        "./*": "./dist/*"
     },
     "license": "MIT",
-    "type": "module"
+    "type": "module",
+    "devDependencies": {
+        "@types/node": "^25.3.0",
+        "@vitest/coverage-v8": "^4.0.18",
+        "jsdom": "^28.1.0",
+        "ts-morph": "^27.0.2",
+        "typescript": "^5.9.3",
+        "vitest": "^4.0.18"
+    }
 }

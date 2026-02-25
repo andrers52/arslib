@@ -1,6 +1,6 @@
-# arslib - Andre's JavaScript Utility Library
+# arslib - Andre's TypeScript Utility Library
 
-A comprehensive, zero-dependency JavaScript utility library providing essential functions for web development, data structures, and Node.js applications.
+A comprehensive, zero-dependency TypeScript utility library providing essential functions for web development, data structures, and Node.js applications.
 
 ## 🚀 Quick Start
 

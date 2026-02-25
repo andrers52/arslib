@@ -5,9 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.9.6] - 2026-02-24
+## [0.10.0] - 2026-02-25
 
 ### Added
+- Complete TypeScript migration of the `arslib` ecosystem.
+- `tsconfig.json` for strict type checking and `ESNext` compilation.
+- Vitest configuration targeting JSDOM to replace the custom test runner.
+
+### Changed
+- Refactored all 50+ JavaScript Vanilla modules and mixins into strongly-typed TypeScript classes and async functions.
+- Fully isolated `.test.ts` from the `dist/` compilation build chain.
+- Eliminated over 500 strict TS compilation holes structurally via custom AST-processing.
+
+### Removed
+- Custom `TestRunner` implementation removed entirely in favor of Vitest.
+
+## [0.9.6] - 2026-02-24### Added
 
 - Added new tests to increase test coverage.
 
