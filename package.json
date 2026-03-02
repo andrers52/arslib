@@ -1,6 +1,6 @@
 {
     "name": "arslib",
-    "version": "0.10.0",
+    "version": "0.11.0",
     "description": "Andre's TypeScript Utility library",
     "repository": {
         "type": "git",
@@ -13,29 +13,15 @@
     },
     "author": "Andre Rodrigues da Silva",
     "main": "./dist/index.js",
+    "module": "./src/index.ts",
     "types": "./dist/index.d.ts",
     "exports": {
         ".": {
+            "import": "./src/index.ts",
             "browser": "./dist/browser/index.js",
-            "default": "./dist/index.js"
+            "default": "./src/index.ts"
         },
-        "./assert": "./dist/assert.js",
-        "./platform": "./dist/platform.js",
-        "./random": "./dist/random.js",
-        "./util": "./dist/util.js",
-        "./language-construct": "./dist/language-construct.js",
-        "./localization": "./dist/localization.js",
-        "./enhancements": "./dist/enhancements/index.js",
-        "./data-structures": "./dist/data-structures/index.js",
-        "./mixins": "./dist/mixins/index.js",
-        "./comm": "./dist/comm/index.js",
-        "./time": "./dist/time/index.js",
-        "./browser": "./dist/browser/index.js",
-        "./node": "./dist/node/index.js",
-        "./node/mixins": "./dist/node/mixins/index.js",
-        "./browser/*": "./dist/browser/*",
-        "./node/*": "./dist/node/*",
-        "./*": "./dist/*"
+        "./*": "./src/*.ts"
     },
     "license": "MIT",
     "type": "module",

@@ -5,34 +5,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.0] - 2026-03-02
+
+### Fixed
+- **Browser Compatibility**: Fixed package.json exports to correctly point to compiled JavaScript files for browser builds
+  - Updated browser export to use `./dist/browser/index.js` instead of TypeScript source
+  - Resolves "Failed to resolve module specifier 'fs'" error when using arslib in browser environments
+  - Ensures browser bundles use pre-compiled JavaScript instead of TypeScript sources
+
 ## [0.10.0] - 2026-02-25
 
 ### Added
-- Complete TypeScript migration of the `arslib` ecosystem.
+- Complete TypeScript migration of `arslib` ecosystem.
 - `tsconfig.json` for strict type checking and `ESNext` compilation.
-- Vitest configuration targeting JSDOM to replace the custom test runner.
+- Vitest configuration targeting JSDOM to replace custom test runner.
 
 ### Changed
 - Refactored all 50+ JavaScript Vanilla modules and mixins into strongly-typed TypeScript classes and async functions.
-- Fully isolated `.test.ts` from the `dist/` compilation build chain.
+- Fully isolated `.test.ts` from `dist/` compilation build chain.
 - Eliminated over 500 strict TS compilation holes structurally via custom AST-processing.
 
 ### Removed
 - Custom `TestRunner` implementation removed entirely in favor of Vitest.
 
-## [0.9.6] - 2026-02-24### Added
+## [0.9.6] - 2026-02-24
 
+### Added
 - Added new tests to increase test coverage.
 
 ## [0.9.5] - 2026-01-03
 
 ### Added
-
 - Browser entry point with conditional exports for bundlers.
 - Subpath exports and module index files (e.g., `arslib/enhancements`).
 
 ### Changed
-
 - Browser utilities now guard with `Platform.isBrowser()` to avoid worker crashes.
 
 ## [0.9.4] - 2025-12-26
@@ -67,7 +74,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- FIFO: `toArrayOrdered()` method to obtain a non-mutating, chronological snapshot (oldest → newest) of the buffer contents.
+- FIFO: `toArrayOrdered()` method to obtain a non-mutating, chronological snapshot (oldest → newest) of buffer contents.
 
 ### Tests
 
@@ -77,13 +84,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Improved
 
-- **FIFO Performance Optimization**: Significantly improved the FIFO data structure implementation with O(1) operations.
+- **FIFO Performance Optimization**: Significantly improved FIFO data structure implementation with O(1) operations.
 
 ## [0.8.1] - 2025-07-11
 
 ### Improved
 
-- **ToxicTextFilter Robustness**: Enhanced the ToxicTextFilter utility with improved real LLM compatibility and better error handling:
+- **ToxicTextFilter Robustness**: Enhanced ToxicTextFilter utility with improved real LLM compatibility and better error handling:
   - Better prompt engineering for clearer LLM instructions
   - Enhanced fallback logic for handling empty or unexpected LLM responses
   - Improved mock LLM implementation for comprehensive testing
@@ -104,7 +111,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **LLMService Migration**: Migrated the LLMService implementation and all related tests (caching, integration, error handling) from brainiac-engine to arslib/llm/.
+- **LLMService Migration**: Migrated LLMService implementation and all related tests (caching, integration, error handling) from brainiac-engine to arslib/llm/.
 - **Comprehensive LLMService Tests**: Added `llm-service.caching.test.js` and `llm-service.integration.test.js` for full coverage of LLMService features, including memory and persistent caching, real and mock LLMs, and error handling.
 - **ToxicTextFilter**: New utility for detecting and filtering toxic content in text using LLM services. Features include:
   - Content filtering with polite alternatives
@@ -136,7 +143,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **NodeFileStore**: New Node.js-compatible persistent file storage module (`node/node-file-store.js`) using the filesystem for caching and retrieval, with API compatible with the browser version.
+- **NodeFileStore**: New Node.js-compatible persistent file storage module (`node/node-file-store.js`) using filesystem for caching and retrieval, with API compatible with browser version.
 - **Comprehensive Tests**: Added `node/node-file-store.test.js` for full coverage of NodeFileStore, including edge cases and error handling.
 
 ### Changed
@@ -150,7 +157,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-- **browser/file-store.test.js**: Removed obsolete test file for the old browser file store implementation.
+- **browser/file-store.test.js**: Removed obsolete test file for old browser file store implementation.
 
 ## [0.6.2] - 2025-07-09
 
@@ -181,7 +188,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **Illegal Return Statement**: Removed top-level `return` statements from browser modules (e.g., `sound.js`, `persistence.js`, `cookie.js`) that caused `SyntaxError: Illegal return statement` when these modules were processed or imported in certain contexts. Logic is now correctly wrapped within the `if (!Platform.isNode()) { ... }` block.
+- **Illegal Return Statement**: Removed top-level `return` statements from browser modules (e.g., `sound.js`, `persistence.js`, `cookie.js`) that caused `SyntaxError: Illegal return statement` when these modules were processed or imported in certain contexts. Logic is now correctly wrapped within an `if (!Platform.isNode()) { ... }` block.
 - **Node.js Module Behavior**: Ensured Node.js specific modules (e.g., `node-http-request.js`, `node-console-log.js`, `mixins/node-log-to-file.js`) are innocuous or no-ops when accidentally imported or run in a browser environment.
 
 ## [0.5.2] - 2025-06-12
@@ -205,7 +212,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **Assert.js**: Consolidated redundant `testMode` and `insideTestRunner` variables into single `testMode` variable for cleaner, more maintainable code
+- **Assert.js**: Consolidated redundant `testMode` and `insideTestRunner` variables into a single `testMode` variable for cleaner, more maintainable code
 - **Test Cleanup**: Added automatic cleanup of test-generated log files after test completion
   - `node-console-log.test.js` now removes `log.txt` after tests
   - `node-log-to-file.test.js` now removes all test log files and directories after tests
@@ -213,7 +220,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **Documentation**: Significantly enhanced README.md with comprehensive module documentation, better structure, usage examples, and professional presentation
-- **Test Environment**: Tests now maintain clean workspace by automatically removing generated files
+- **Test Environment**: Tests now maintain a clean workspace by automatically removing generated files
 
 ## [0.5.0] - 2025-06-12
 
@@ -227,7 +234,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Test Runner**: Implemented comprehensive, zero-dependency test runner with modern expect API
   - New `test/test-runner.js` with fluent assertion methods
   - Complete test coverage for all previously untested modules
-  - Updated all existing tests to use new test runner
+  - Updated all existing tests to use the new test runner
   - **Enhanced Error Messages**: All expect methods now accept optional descriptive messages for better test failure reporting
 - **Assert.js**: Enhanced with new assertion methods
   - `assertHasProperty`, `assertHasLength`, `assertIsType`
@@ -241,7 +248,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **Test Quality Improvement**: Systematically removed all assertion/check comments from test files and converted them into descriptive error messages for better debugging experience
-- **Code Clarity**: All test assertions now use descriptive messages as third parameter to expect methods instead of inline comments
+- **Code Clarity**: All test assertions now use descriptive messages as the third parameter to expect methods instead of inline comments
 - **Documentation**: Updated README and test documentation to reflect new testing best practices
 
 ## [0.4.0] - 2025-06-11
@@ -414,12 +421,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **Bug fix in `assert.js`**: Corrected condition in `assertIsArrayOfNumbers` and `assertIsArrayOfObjects`
-- **Bug fix in `e-string.js`**: Fixed `capitalize` function to use correct string reference
+- **Bug fix in `e-string.js`**: Fixed `capitalize` function to use the correct string reference
 
 ### Changed
 
 - **Repository field** in package.json now properly formatted as object
-- **Enhanced documentation** throughout the codebase with consistent JSDoc format
+- **Enhanced documentation** throughout codebase with consistent JSDoc format
 
 ## [0.2.1] - Previous Release
 
