@@ -41,7 +41,8 @@ export class NodeFileStore {
       await NodeFileStore.ensureStorageDir();
       return true;
     } catch (error) {
-      console.warn("⚠️ Filesystem storage not available:", error.message);
+      const message = error instanceof Error ? error.message : String(error);
+      console.warn("⚠️ Filesystem storage not available:", message);
       return false;
     }
   }
@@ -53,9 +54,15 @@ export class NodeFileStore {
    * @param {Function} successCallback - Callback function called on successful storage
    * @param {Function} errorCallback - Callback function called on error
    */
-  static async putFile(identifier: any, blob: any, successCallback: any, errorCallback: any) {
+  static async putFile(
+    identifier: any,
+    blob: any,
+    successCallback: any,
+    errorCallback: any,
+  ) {
     if (!Platform.isNode()) {
-      if (errorCallback) errorCallback(new Error("NodeFileStore is only available in Node.js"));
+      if (errorCallback)
+        errorCallback(new Error("NodeFileStore is only available in Node.js"));
       return;
     }
     try {
@@ -65,10 +72,13 @@ export class NodeFileStore {
 
       // Convert blob to string (assuming JSON content)
       if (blob.text) {
-        blob.text().then((text) => {
-          fs.writeFileSync(filePath, text);
-          if (successCallback) successCallback();
-        }).catch(errorCallback);
+        blob
+          .text()
+          .then((text: string) => {
+            fs.writeFileSync(filePath, text);
+            if (successCallback) successCallback();
+          })
+          .catch(errorCallback);
       } else {
         const content = blob.parts ? blob.parts.join("") : JSON.stringify(blob);
         fs.writeFileSync(filePath, content);
@@ -85,9 +95,14 @@ export class NodeFileStore {
    * @param {Function} successCallback - Callback function called with the retrieved blob on success
    * @param {Function} errorCallback - Callback function called on error
    */
-  static async getFile(identifier: any, successCallback: any, errorCallback: any) {
+  static async getFile(
+    identifier: any,
+    successCallback: any,
+    errorCallback: any,
+  ) {
     if (!Platform.isNode()) {
-      if (errorCallback) errorCallback(new Error("NodeFileStore is only available in Node.js"));
+      if (errorCallback)
+        errorCallback(new Error("NodeFileStore is only available in Node.js"));
       return;
     }
     try {
