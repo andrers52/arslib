@@ -1,6 +1,37 @@
+// actor
+export type { ActorId } from "../actor/actor-id.js";
+export { ActorIdAllocator } from "../actor/actor-id.js";
+export { InMemoryMailbox, SabMailbox } from "../actor/mailbox.js";
+export type { Actor, WorkerControlMessage, WorkerReplyMessage } from "../actor/actor.js";
+export { ActorState, HealthSignal, WorkerActorHarness } from "../actor/actor.js";
+
+// bus
+export {
+    MessageKind,
+    EnvelopeValidationError,
+    EnvelopeValidationErrorKind,
+    EnvelopeValidationErrorClass,
+    BusEnvelope,
+    ENVELOPE_HEADER_SIZE,
+    MAX_TOPIC_LEN,
+    MAX_PAYLOAD_LEN,
+    encodeBusEnvelope,
+    decodeBusEnvelope,
+    envelopeToJson,
+    jsonToEnvelope,
+} from "../bus/envelope.js";
+export type { BusEnvelopeJson } from "../bus/envelope.js";
+export { TopicRegistry } from "../bus/topic.js";
+export { RoutingTable, BusContext } from "../bus/context.js";
+export type { SendResult, RouteResult } from "../bus/context.js";
+export { ModuleId, ModuleState, moduleStateCanTransitionTo, ModuleError, ModuleErrorClass } from "../bus/module.js";
+export type { ForgeModule } from "../bus/module.js";
+export { BusEvent } from "../bus/observability.js";
+export type { ObservabilitySink } from "../bus/observability.js";
+export type { BusTransportAdapter, BusChannelMode } from "../bus/transport-adapter.js";
+
 // data structures
 export { Fifo } from "../data-structures/fifo.js";
-export { OrderedArray } from "../data-structures/ordered-array.js";
 // enhancements
 export { EArray } from "../enhancements/e-array.js";
 export { EFunction } from "../enhancements/e-function.js";

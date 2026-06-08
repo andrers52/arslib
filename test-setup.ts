@@ -1,34 +1,36 @@
 // Mock HTMLCanvasElement getsContext for jsdom
-HTMLCanvasElement.prototype.getContext = () => {
-    return {
-        fillRect: () => { },
-        clearRect: () => { },
-        getImageData: (x = 0, y = 0, w = 0, h = 0) => ({
-            data: new Array(w * h * 4).fill(0)
-        }),
-        putImageData: () => { },
-        createImageData: () => [],
-        setTransform: () => { },
-        drawImage: () => { },
-        save: () => { },
-        fillText: () => { },
-        restore: () => { },
-        beginPath: () => { },
-        moveTo: () => { },
-        lineTo: () => { },
-        closePath: () => { },
-        stroke: () => { },
-        translate: () => { },
-        scale: () => { },
-        rotate: () => { },
-        arc: () => { },
-        fill: () => { },
-        measureText: () => ({ width: 0 }),
-        transform: () => { },
-        rect: () => { },
-        clip: () => { },
+if (typeof HTMLCanvasElement !== 'undefined') {
+    HTMLCanvasElement.prototype.getContext = () => {
+        return {
+            fillRect: () => { },
+            clearRect: () => { },
+            getImageData: (x = 0, y = 0, w = 0, h = 0) => ({
+                data: new Array(w * h * 4).fill(0)
+            }),
+            putImageData: () => { },
+            createImageData: () => [],
+            setTransform: () => { },
+            drawImage: () => { },
+            save: () => { },
+            fillText: () => { },
+            restore: () => { },
+            beginPath: () => { },
+            moveTo: () => { },
+            lineTo: () => { },
+            closePath: () => { },
+            stroke: () => { },
+            translate: () => { },
+            scale: () => { },
+            rotate: () => { },
+            arc: () => { },
+            fill: () => { },
+            measureText: () => ({ width: 0 }),
+            transform: () => { },
+            rect: () => { },
+            clip: () => { },
+        };
     };
-};
+}
 
 if (typeof window !== 'undefined') {
     // Mock indexedDB for browser-file-store
