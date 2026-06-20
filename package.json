@@ -1,7 +1,8 @@
 {
     "name": "arslib",
-    "version": "0.11.0",
+    "version": "0.11.1",
     "description": "Andre's TypeScript Utility library",
+    "sideEffects": false,
     "repository": {
         "type": "git",
         "url": "git+https://github.com/andrers52/arslib.git"
