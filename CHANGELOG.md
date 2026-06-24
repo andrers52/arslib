@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.0] - 2026-06-24
+
+### Fixed
+- **`BrowserFileStore` no longer opens an IndexedDB database at import time.** The class was a single `static {}` block that called `initializeDatabase()` on module load, so merely importing arslib's browser barrel (transitively, e.g. via `brainiac-engine`) eagerly created an IndexedDB database in every consuming app. The database is now opened **lazily** on the first `putFile`/`getFile` call (idempotent, guarded). `isAvailable()` no longer opens a connection. Non-browser environments degrade gracefully — `isAvailable()` returns `false` and `putFile`/`getFile` invoke their `errorCallback` instead of throwing.
+
+### Changed
+- **`BrowserFileStore` renamed its IndexedDB database and object store** (BREAKING for any consumer that read the old store): database `mimiFiles` → `arslib_files`, object store `mimi` → `files`. The old names came from a defunct project. Data stored under the old names is not migrated; the old database is simply orphaned (no consumer references it).
+- `BrowserFileStore` converted from a side-effecting `static {}` initializer to a normal class with real `static` methods; public API (`isAvailable`, `putFile`, `getFile`) and callback signatures are unchanged.
+
 ## [0.11.1] - 2026-06-19
 
 ### Added
